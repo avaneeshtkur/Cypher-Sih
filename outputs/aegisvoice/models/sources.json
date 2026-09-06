@@ -1,0 +1,122 @@
+{
+  "retrieved_at": "2026-09-06T20:21:18Z",
+  "files": [
+    {
+      "name": "scam_single/README.md",
+      "url": "https://huggingface.co/datasets/BothBosu/single-agent-scam-conversations/resolve/1debe2743472927cd4ed3bf39e8b0d8234bd5e3f/README.md",
+      "path": "datasets\\scam_single\\README.md",
+      "bytes": 2897,
+      "sha256": "233b86b1a3724542698f379c74b6d706e0941426d546e09fdfe4b5af127b3f70",
+      "license": "Apache-2.0",
+      "revision": "1debe2743472927cd4ed3bf39e8b0d8234bd5e3f"
+    },
+    {
+      "name": "scam_single/single-agent-scam-dialogue_train.csv",
+      "url": "https://huggingface.co/datasets/BothBosu/single-agent-scam-conversations/resolve/1debe2743472927cd4ed3bf39e8b0d8234bd5e3f/single-agent-scam-dialogue_train.csv",
+      "path": "datasets\\scam_single\\single-agent-scam-dialogue_train.csv",
+      "bytes": 1911489,
+      "sha256": "4cf61dd3f7e7f29349feb62cf9b48f4281df8a18e01581eb8b18c47d5550d2d9",
+      "license": "Apache-2.0",
+      "revision": "1debe2743472927cd4ed3bf39e8b0d8234bd5e3f"
+    },
+    {
+      "name": "scam_single/single-agent-scam-dialogue_test.csv",
+      "url": "https://huggingface.co/datasets/BothBosu/single-agent-scam-conversations/resolve/1debe2743472927cd4ed3bf39e8b0d8234bd5e3f/single-agent-scam-dialogue_test.csv",
+      "path": "datasets\\scam_single\\single-agent-scam-dialogue_test.csv",
+      "bytes": 475657,
+      "sha256": "26626863dec88a3289703d7791eefec11be30c98bd225edc49c435e580c53305",
+      "license": "Apache-2.0",
+      "revision": "1debe2743472927cd4ed3bf39e8b0d8234bd5e3f"
+    },
+    {
+      "name": "scam_multi/README.md",
+      "url": "https://huggingface.co/datasets/BothBosu/multi-agent-scam-conversation/resolve/709db2b6c37f424c3070f29138abb33971e21ab9/README.md",
+      "path": "datasets\\scam_multi\\README.md",
+      "bytes": 4042,
+      "sha256": "bc21d47e5593ee298f4c457adee4aa281ff6913063e67cb5f2289c7b097526af",
+      "license": "Apache-2.0",
+      "revision": "709db2b6c37f424c3070f29138abb33971e21ab9"
+    },
+    {
+      "name": "scam_multi/agent_conversation_train.csv",
+      "url": "https://huggingface.co/datasets/BothBosu/multi-agent-scam-conversation/resolve/709db2b6c37f424c3070f29138abb33971e21ab9/agent_conversation_train.csv",
+      "path": "datasets\\scam_multi\\agent_conversation_train.csv",
+      "bytes": 3841211,
+      "sha256": "e1c89f4e252162f5a37c01d2ebe9e0cdcad3b22b7bcf01ef730877cef04612db",
+      "license": "Apache-2.0",
+      "revision": "709db2b6c37f424c3070f29138abb33971e21ab9"
+    },
+    {
+      "name": "scam_multi/agent_conversation_test.csv",
+      "url": "https://huggingface.co/datasets/BothBosu/multi-agent-scam-conversation/resolve/709db2b6c37f424c3070f29138abb33971e21ab9/agent_conversation_test.csv",
+      "path": "datasets\\scam_multi\\agent_conversation_test.csv",
+      "bytes": 986115,
+      "sha256": "93d380c704e47d81028aa55c03a3f28cd6e23498c03cb70aad136a3762c0cc74",
+      "license": "Apache-2.0",
+      "revision": "709db2b6c37f424c3070f29138abb33971e21ab9"
+    },
+    {
+      "name": "asvspoof2017/README_V2.txt",
+      "url": "https://datashare.ed.ac.uk/bitstreams/ab9df60c-3909-4667-bff3-09b4925ea00a/download",
+      "path": "datasets\\asvspoof2017\\README_V2.txt",
+      "bytes": 8870,
+      "sha256": "815ca4af599ae6b2b7cbac0381d02e9620e34d37f91ecf41ccf4d63fb6bd4633",
+      "license": "CC-BY-NC-4.0",
+      "revision": "ASVspoof 2017 V2 \u00b7 DOI 10.7488/ds/2332"
+    },
+    {
+      "name": "asvspoof2017/protocol_V2.zip",
+      "url": "https://datashare.ed.ac.uk/bitstreams/dbf267c4-517e-4193-9cdf-c8eadc82ec78/download",
+      "path": "datasets\\asvspoof2017\\protocol_V2.zip",
+      "bytes": 106034,
+      "sha256": "6928ad419c7c1a62a7b094d0bbae6a1c8422021fa83b22afddd88387bc9e2883",
+      "license": "CC-BY-NC-4.0",
+      "revision": "ASVspoof 2017 V2 \u00b7 DOI 10.7488/ds/2332"
+    },
+    {
+      "name": "asvspoof2017/ASVspoof2017_V2_train.zip",
+      "url": "https://datashare.ed.ac.uk/bitstreams/4c7e2262-fe78-497e-839f-0ceabbbf2d1e/download",
+      "path": "datasets\\asvspoof2017\\ASVspoof2017_V2_train.zip",
+      "bytes": 210526460,
+      "sha256": "1c2495a787b246554c13aa99acdfac362b84f9623bb7ee6cbef4b7e03ae3aad1",
+      "license": "CC-BY-NC-4.0",
+      "revision": "ASVspoof 2017 V2 \u00b7 DOI 10.7488/ds/2332"
+    },
+    {
+      "name": "asvspoof2017/ASVspoof2017_V2_dev.zip",
+      "url": "https://datashare.ed.ac.uk/bitstreams/4daef0d3-f9e8-49e4-9ffc-a7362842a8f2/download",
+      "path": "datasets\\asvspoof2017\\ASVspoof2017_V2_dev.zip",
+      "bytes": 140249798,
+      "sha256": "fb58f07441b38f957aa412bc5e2ca9197de01caa426e939d2184559572077039",
+      "license": "CC-BY-NC-4.0",
+      "revision": "ASVspoof 2017 V2 \u00b7 DOI 10.7488/ds/2332"
+    },
+    {
+      "name": "asvspoof2017/ASVspoof2017_V2_eval.zip",
+      "url": "https://datashare.ed.ac.uk/bitstreams/77c52086-76ed-4517-a72a-cc94e54a2c0a/download",
+      "path": "datasets\\asvspoof2017\\ASVspoof2017_V2_eval.zip",
+      "bytes": 1143574971,
+      "sha256": "8db0aea01c0ceefb067520a8cf4726093bfc5b7494be010e5e956f4834125238",
+      "license": "CC-BY-NC-4.0",
+      "revision": "ASVspoof 2017 V2 \u00b7 DOI 10.7488/ds/2332"
+    },
+    {
+      "name": "mendeley-fake-audio/Fake_ElevenLabs_Respeecher.zip",
+      "url": "https://data.mendeley.com/datasets/79g59sp69z/1",
+      "path": "datasets/mendeley-fake-audio-v1/Fake_ElevenLabs_Respeecher.zip",
+      "bytes": 521581603,
+      "sha256": "4ff7910fa37dd4af6fb897a1fc8051936c25eaefbdfa288c43c4d93875e05cb1",
+      "license": "CC BY 4.0",
+      "revision": "10.17632/79g59sp69z.1"
+    },
+    {
+      "name": "mendeley-fake-audio/metadata.xlsx",
+      "url": "https://data.mendeley.com/datasets/79g59sp69z/1",
+      "path": "datasets/mendeley-fake-audio-v1/metadata.xlsx",
+      "bytes": 38850,
+      "sha256": "4676c37940e903ab503b2839310370e62307cb0bcb46e92c93615c76d12b3edb",
+      "license": "CC BY 4.0",
+      "revision": "10.17632/79g59sp69z.1"
+    }
+  ]
+}

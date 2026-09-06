@@ -1,0 +1,29 @@
+{
+  "tested_at": "2026-09-06T20:31:57Z",
+  "passed": 22,
+  "checks": [
+    "All three local models are ready",
+    "API serves actual evaluation reports",
+    "Trained evaluations and external India text records are accessible",
+    "All 13,306 audio evaluation records accessible",
+    "Public text label 0: fresh inference reproduces saved score",
+    "Public text label 0: supplied label/ID cannot alter prediction",
+    "Public text label 1: fresh inference reproduces saved score",
+    "Public text label 1: supplied label/ID cannot alter prediction",
+    "Public audio label 0: endpoint returns actual WAV bytes",
+    "Public audio label 0: waveform inference reproduces saved score",
+    "ASR transcribes a downloaded genuine recording",
+    "Public audio label 1: endpoint returns actual WAV bytes",
+    "Public audio label 1: waveform inference reproduces saved score",
+    "Text errors filter exposes every saved binary mistake",
+    "Audio errors filter exposes all 4,515 binary mistakes",
+    "Silence abstains from replay classification",
+    "Silence produces no fabricated transcript",
+    "Invalid or foreign-origin replay request rejected: 400",
+    "Invalid or foreign-origin replay request rejected: 403",
+    "No unintended file exposure: /api/dataset/audio/not-a-file",
+    "No unintended file exposure: /models/intent.joblib",
+    "No unintended file exposure: /../server.mjs"
+  ],
+  "scope": "Live HTTP/model integration using actual public text and WAV records; hardware microphone capture not tested."
+}

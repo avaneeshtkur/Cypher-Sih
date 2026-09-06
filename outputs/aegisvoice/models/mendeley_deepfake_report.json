@@ -1,0 +1,108 @@
+{
+  "dataset": "Mendeley Fake Audio Dataset (ElevenLabs & Respeecher)",
+  "doi": "10.17632/79g59sp69z.1",
+  "version": 1,
+  "license": "CC BY 4.0",
+  "evaluatedAt": "2026-09-06T19:53:12Z",
+  "selection": "all installed records",
+  "installedCount": 600,
+  "evaluatedCount": 600,
+  "overall": {
+    "n": 600,
+    "pellaSyntheticDetectionRate": 0.9633333333333334,
+    "aasistSpoofDetectionRate": 0.6166666666666667,
+    "eitherDetectorRate": 0.985,
+    "bothDetectorsRate": 0.595,
+    "detectorDisagreementRate": 0.39
+  },
+  "breakdown": {
+    "tool": {
+      "ElevenLabs": {
+        "n": 335,
+        "pellaSyntheticDetectionRate": 0.9432835820895522,
+        "aasistSpoofDetectionRate": 0.6208955223880597,
+        "eitherDetectorRate": 0.9791044776119403,
+        "bothDetectorsRate": 0.5850746268656717,
+        "detectorDisagreementRate": 0.3940298507462687
+      },
+      "Respeecher": {
+        "n": 265,
+        "pellaSyntheticDetectionRate": 0.9886792452830189,
+        "aasistSpoofDetectionRate": 0.6113207547169811,
+        "eitherDetectorRate": 0.9924528301886792,
+        "bothDetectorsRate": 0.6075471698113207,
+        "detectorDisagreementRate": 0.3849056603773585
+      }
+    },
+    "generationType": {
+      "TTS": {
+        "n": 108,
+        "pellaSyntheticDetectionRate": 0.9907407407407407,
+        "aasistSpoofDetectionRate": 0.4537037037037037,
+        "eitherDetectorRate": 0.9907407407407407,
+        "bothDetectorsRate": 0.4537037037037037,
+        "detectorDisagreementRate": 0.5370370370370371
+      },
+      "V2V": {
+        "n": 492,
+        "pellaSyntheticDetectionRate": 0.9573170731707317,
+        "aasistSpoofDetectionRate": 0.6524390243902439,
+        "eitherDetectorRate": 0.983739837398374,
+        "bothDetectorsRate": 0.6260162601626016,
+        "detectorDisagreementRate": 0.35772357723577236
+      }
+    },
+    "gender": {
+      "F": {
+        "n": 305,
+        "pellaSyntheticDetectionRate": 0.9836065573770492,
+        "aasistSpoofDetectionRate": 0.6196721311475409,
+        "eitherDetectorRate": 0.9934426229508196,
+        "bothDetectorsRate": 0.6098360655737705,
+        "detectorDisagreementRate": 0.3836065573770492
+      },
+      "M": {
+        "n": 295,
+        "pellaSyntheticDetectionRate": 0.9423728813559322,
+        "aasistSpoofDetectionRate": 0.6135593220338983,
+        "eitherDetectorRate": 0.976271186440678,
+        "bothDetectorsRate": 0.5796610169491525,
+        "detectorDisagreementRate": 0.39661016949152544
+      }
+    },
+    "ageGroup": {
+      "adult": {
+        "n": 538,
+        "pellaSyntheticDetectionRate": 0.9721189591078067,
+        "aasistSpoofDetectionRate": 0.6263940520446096,
+        "eitherDetectorRate": 0.9869888475836431,
+        "bothDetectorsRate": 0.6115241635687733,
+        "detectorDisagreementRate": 0.3754646840148699
+      },
+      "minor": {
+        "n": 8,
+        "pellaSyntheticDetectionRate": 1.0,
+        "aasistSpoofDetectionRate": 0.125,
+        "eitherDetectorRate": 1.0,
+        "bothDetectorsRate": 0.125,
+        "detectorDisagreementRate": 0.875
+      },
+      "older": {
+        "n": 54,
+        "pellaSyntheticDetectionRate": 0.8703703703703703,
+        "aasistSpoofDetectionRate": 0.5925925925925926,
+        "eitherDetectorRate": 0.9629629629629629,
+        "bothDetectorsRate": 0.5,
+        "detectorDisagreementRate": 0.46296296296296297
+      }
+    }
+  },
+  "runtimeSeconds": 1109.6319389343262,
+  "limitations": [
+    "All 600 recordings are publisher-labelled synthetic audio; there is no genuine class.",
+    "Detection rates are sensitivity on this corpus, not accuracy, precision, specificity, or real-world calibration.",
+    "Speaker/source identities and source utterance grouping are not provided, so this corpus is not used for random clip-level training splits.",
+    "The workbook reports 22,050 Hz for every row, but measured WAV headers are 44,100 Hz or 48,000 Hz.",
+    "The dataset has no scam-intent labels and does not train or validate fraud-request classification."
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "generated_at": "2026-09-05T22:15:48.461Z",
+  "method": "Synthetic deterministic signals transformed by known channel operations. Distances are normalized channel-profile distances.",
+  "rate": 16000,
+  "trials_per_condition": 24,
+  "seconds_per_trial": 3,
+  "results": [
+    {
+      "condition": "same path, different utterance",
+      "group": "same",
+      "trials": 24,
+      "min": 0.0321,
+      "p50": 0.1027,
+      "p95": 0.3417,
+      "max": 0.3516
+    },
+    {
+      "condition": "same path, gain change",
+      "group": "same",
+      "trials": 24,
+      "min": 0.0582,
+      "p50": 0.1557,
+      "p95": 0.2915,
+      "max": 0.3662
+    },
+    {
+      "condition": "same path, mild added noise",
+      "group": "same",
+      "trials": 24,
+      "min": 0.2755,
+      "p50": 0.3428,
+      "p95": 0.4949,
+      "max": 0.532
+    },
+    {
+      "condition": "replay through room speaker (mild)",
+      "group": "changed",
+      "trials": 24,
+      "min": 0.2315,
+      "p50": 0.3223,
+      "p95": 0.4757,
+      "max": 0.5327
+    },
+    {
+      "condition": "replay through room speaker (strong)",
+      "group": "changed",
+      "trials": 24,
+      "min": 0.5954,
+      "p50": 0.6498,
+      "p95": 0.8158,
+      "max": 0.8446
+    },
+    {
+      "condition": "telephone / decimated codec path",
+      "group": "changed",
+      "trials": 24,
+      "min": 0.5877,
+      "p50": 0.8999,
+      "p95": 0.966,
+      "max": 0.9917
+    }
+  ],
+  "real_audio": [
+    {
+      "comparison": "demo clip vs demo clip (same recording path)",
+      "distance": 0.0625,
+      "reference_high_band_ratio": 0.0276
+    },
+    {
+      "comparison": "demo clip vs telephone-decimated demo clip",
+      "distance": 0.3489,
+      "reference_high_band_ratio": 0.0276
+    }
+  ],
+  "separation": {
+    "worst_same_path_distance": 0.532,
+    "best_changed_path_distance": 0.2315,
+    "same_and_changed_overlap": true
+  },
+  "thresholds_in_use": {
+    "channelMatch": 0.35,
+    "channelMismatch": 0.6,
+    "minReliability": 0.5,
+    "minSpeechSeconds": 0.6
+  },
+  "threshold_rationale": "channelMatch 0.35 sits at or below the typical same-path distance. channelMismatch 0.6 sits above the worst measured same-path distance (0.532), so a same-path reply is not expected to be reported as mismatched. The band between them is reported as partial and only lowers reliability.",
+  "limitations": [
+    "Mild loudspeaker replay (0.2755-0.532) overlaps the range of a same path with added noise (0.2755-0.532). Channel continuity therefore cannot detect low-reverberation replay and must never be read as a replay detector.",
+    "Sensitivity depends on how much high-band energy the reference audio carries. On the bundled text-to-speech demo clips, whose high-band share is far lower than the synthetic calibration signals, a telephone-decimated reply moves the distance only into the partial band rather than past the mismatch threshold. Sources that are already band-limited weaken this check.",
+    "Thresholds are chosen to avoid false mismatch on an unchanged path, which necessarily lets some genuine path changes through as partial or consistent.",
+    "Signals are synthetic apart from the demo comparison. Real microphones, rooms, codecs and packet loss are not represented, so these distances do not establish field performance.",
+    "A consistent channel does not establish that speech is live, genuine or from the claimed speaker."
+  ]
+}

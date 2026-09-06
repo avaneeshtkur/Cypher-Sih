@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-09-06",
+  "executionPolicy": {
+    "offlineInference": true,
+    "trustRemoteCode": false,
+    "checkpointLoader": "torch.load(weights_only=True)",
+    "identityDecisionAllowed": false
+  },
+  "models": {
+    "pellaV2": {
+      "source": "https://huggingface.co/Sadanie/pellav2-audio-deepfake-detector",
+      "revision": "8cdc107a8bffeb522ff86d9fb9b6b19272e1ef4a",
+      "checkpointSha256": "8214705ad784f66bca0736300e3432d5bfc325f1fc211a3aea5f9a13c790b023",
+      "review": "Inference script has no shell/network execution. Its unrestricted torch.load was replaced with weights_only=True and strict state-dict loading."
+    },
+    "wav2vec2XlsR300m": {
+      "source": "https://huggingface.co/facebook/wav2vec2-xls-r-300m",
+      "revision": "1a640f32ac3e39899438a2931f9924c02f080a54",
+      "checkpointSha256": "d5e490574712ad0a6736923b9ed11d4cd51c78609c36205f704fc4e87b11d2e0"
+    },
+    "aasist": {
+      "source": "https://github.com/clovaai/aasist",
+      "revision": "a04c9863f63d44471dde8a6abcb3b082b07cd1d1",
+      "checkpointSha256": "51d2d9cf0738172f61e2a384ec50a54a55363240f67c971ed55a92435bc1a1c0",
+      "review": "Only the model definition and checkpoint are imported. download_dataset.py and evaluation.py contain os.system and are never copied, imported, or executed."
+    },
+    "ecapaTdnn": {
+      "source": "https://huggingface.co/speechbrain/spkrec-ecapa-voxceleb",
+      "revision": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286",
+      "embeddingSha256": "0575cb64845e6b9a10db9bcb74d5ac32b326b8dc90352671d345e2ee3d0126a2"
+    },
+    "fasterWhisperTinyEn": {
+      "source": "https://huggingface.co/Systran/faster-whisper-tiny.en",
+      "revision": "0d3d19a32d3338f10357c0889762bd8d64bbdeba",
+      "modelSha256": "1a5afae06a4db91c975c9a9d78be5cc110ee4ea022ad57d55492e4550e936b2a"
+    }
+  }
+}

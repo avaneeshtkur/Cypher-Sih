@@ -1,0 +1,13 @@
+work/
+datasets/
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+*.zip
+*.tar.gz
+.server*.log

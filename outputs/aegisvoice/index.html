@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#06070a">
+  <title>AegisVoice | Call desk</title>
+  <script>try{const t=localStorage.getItem('aegisvoice-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch{}</script>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="field" aria-hidden="true"><span></span><span></span><span></span></div>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <aside class="sidebar">
+    <a class="brand" href="#desk"><span class="brand-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4 4.6 5.3v6.1c0 4.4 3 8.4 7.4 10.2 4.4-1.8 7.4-5.8 7.4-10.2V5.3Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7.6 12.4h1.6l1.3-3.6 1.8 6.6 1.5-4.3.9 1.3h1.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>AegisVoice<small>CALL VERIFICATION</small></span></a>
+    <nav aria-label="Workspace">
+      <a href="#desk" data-view="desk" aria-current="page"><span>01</span> Call desk</a>
+      <a href="#review" data-view="review"><span>02</span> Transcript lab</a>
+      <a href="#verify" data-view="verify"><span>03</span> Voice check</a>
+      <a href="#data" data-view="data"><span>04</span> Evidence library</a>
+      <a href="#attack" data-view="attack"><span>05</span> Attack lab</a>
+    </nav>
+    <div class="side-note"><span class="dot"></span> Local workspace<p>Text rules run in your browser.<br>No cloud inference.</p></div>
+    <div class="side-footer">Evidence, not certainty.<p>A research prototype. Neither caller identity nor voice authenticity is established.</p></div>
+  </aside>
+  <main id="main">
+    <header>
+      <div class="title-block"><div class="eyebrow">AEGISVOICE / WORKSPACE</div><h1 id="page-title">Call desk</h1><p id="page-description">Listen to a scenario. See the request assessment change.</p></div>
+      <div class="header-actions"><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to light theme"><span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-thumb"></span></span><span id="theme-toggle-label">Dark</span></button><button id="export" class="quiet">Export session</button><button id="reset" class="quiet">Reset</button></div>
+    </header>
+    <div class="service-strip" role="status"><span class="service-dot"></span><span id="model-health">Checking local capabilities...</span><button id="refresh-status" class="text-button">Recheck</button></div>
+
+    <section id="view-desk" data-workspace="desk" aria-label="Call desk">
+      <section class="scope" id="scope" data-tone="neutral" aria-label="Live signal scope">
+        <div class="scope-viz">
+          <canvas id="scope-wave" width="1400" height="340" aria-hidden="true"></canvas>
+          <div class="scope-legend"><span>SIGNAL SCOPE</span><b id="scope-status">NO SIGNAL</b></div>
+        </div>
+        <div class="scope-meta">
+          <div class="scope-state">
+            <div class="scope-ring">
+              <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle class="track" cx="32" cy="32" r="27"></circle><circle class="value" id="scope-arc" cx="32" cy="32" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"></circle></svg>
+              <i id="scope-level">0%</i>
+            </div>
+            <div><span>Peak input level</span><b id="scope-source">No input</b></div>
+          </div>
+          <dl class="scope-stats">
+            <div><dt>Rule state</dt><dd id="scope-verdict">Waiting for input</dd></div>
+            <div><dt>Phrases</dt><dd id="scope-phrases">0</dd></div>
+            <div><dt>Stage</dt><dd id="scope-stage">Ready</dd></div>
+          </dl>
+          <ul class="scope-ramp" aria-label="Waveform colour key">
+            <li data-tone="neutral">Unassessed</li>
+            <li data-tone="low">Low</li>
+            <li data-tone="caution">Caution</li>
+            <li data-tone="suspicious">Suspicious</li>
+            <li data-tone="high">High</li>
+          </ul>
+        </div>
+      </section>
+      <div class="desk-grid">
+        <section class="panel source-panel">
+          <div class="section-title"><h2>Audio source</h2><span class="tag">NO DOWNLOADS FOR DEMOS</span></div>
+          <div class="source-switch" role="group" aria-label="Source type">
+            <button id="choose-demo" class="selected" aria-pressed="true">Demo audio</button>
+            <button id="choose-database" aria-pressed="false">Audio database samples</button>
+            <button id="choose-live" aria-pressed="false">Live audio</button>
+          </div>
+          <div id="demo-source">
+            <label for="demo-select">Scenario</label>
+            <select id="demo-select">
+              <option value="payment-pressure">Payment pressure</option>
+              <option value="legitimate-payment">Legitimate payment</option>
+              <option value="digital-arrest">Digital-arrest scam</option>
+              <option value="refund-lure">Refund / OTP lure</option>
+            </select>
+            <p id="demo-disclosure" class="source-disclosure"><b>Authored transcript mode</b>Stock TTS audio with its supplied script. Approximate phrase cues follow the player. Rules are evaluated as phrases arrive; this is not speech recognition.</p>
+            <audio id="demo-player" controls preload="metadata" aria-label="Selected demonstration audio"></audio>
+            <div class="button-row"><button id="demo-start" class="primary" disabled>Play demo</button><button id="demo-restart" disabled>Start over</button></div>
+            <p id="demo-status" class="fine" role="status">Loading the local demo catalogue...</p>
+            <button id="demo-asr" disabled>Recognize this audio with local ASR</button>
+            <p id="demo-asr-status" class="fine" role="status">Actual waveform recognition is separate from the supplied-script demo.</p>
+            <button id="review-asr" hidden>Review recognized text in lab</button>
+            <details><summary>What does this demonstrate?</summary><p>Incremental request analysis, supporting and excluded evidence, and recommendations. Both the safe and scam scripts use a synthetic voice. A voice sounding synthetic is not evidence that a request is fraudulent.</p><p>The recognition button sends only WAV bytes to the local ASR library, not the supplied script. It returns model-derived text and segment times. CPU inference may be slower than playback.</p></details>
+          </div>
+          <div id="database-source" hidden>
+            <label for="database-select">Bundled database recording</label>
+            <select id="database-select"></select>
+            <p id="database-disclosure" class="source-disclosure"><b>Database provenance</b>Loading bundled audio catalogue…</p>
+            <audio id="database-player" controls preload="metadata"></audio>
+            <div class="button-row"><button id="database-play" class="primary" disabled>Play recording</button><button id="database-analyze" disabled>Detect &amp; analyze audio</button><button id="database-deepfake" disabled>Run Pella + AASIST</button></div>
+            <p id="database-status" class="fine" role="status">Loading real-world, benchmark, and synthetic audio files…</p>
+            <div id="database-model-result" class="replay-result" hidden></div>
+            <details><summary>Included and access-controlled sources</summary><div id="database-source-status"></div></details>
+          </div>
+          <div id="live-source" hidden>
+            <p id="live-capability" class="source-disclosure">Live transcription requires the local speech service.</p>
+            <div class="button-stack"><button id="live-share" class="primary" disabled>Share call / tab audio</button><button id="live-mic" disabled>Use microphone</button></div>
+            <div class="button-row"><button id="live-stop" disabled>Stop capture</button><button id="live-clear">Clear live session</button></div>
+            <label for="live-level">Input level</label><meter id="live-level" min="0" max="1" value="0"></meter>
+            <p id="live-status" role="status" class="fine">Capture is off.</p><p id="live-latency" class="fine"></p>
+            <details><summary>Capture &amp; privacy</summary><p>Choose a tab with Share audio enabled, or system audio in a supported browser. Video is not processed. Microphone input may include both speakers: no automatic speaker separation is available. Audio chunks go only to the local inference service.</p></details>
+          </div>
+        </section>
+        <section class="panel monitor-panel">
+          <div class="section-title"><h2>Call monitor</h2><span id="session-mode" class="tag">GUIDED DEMO</span></div>
+          <ol class="pipeline" aria-label="Processing stages">
+            <li><span>01 / INPUT</span><b id="pipeline-input">Ready</b></li>
+            <li><span>02 / TRANSCRIPT</span><b id="pipeline-text">Supplied script</b></li>
+            <li><span>03 / ANALYSIS</span><b id="pipeline-analysis">Waiting</b></li>
+          </ol>
+          <div id="live-risk" class="assessment neutral" aria-live="polite"><div class="eyebrow">REQUEST ASSESSMENT</div><h3>Waiting for input</h3><p>Play a demo or choose a live audio source.</p></div>
+          <div id="live-next" class="next-step">No decision yet. This system does not authenticate the caller.</div>
+          <div class="section-title compact"><h3>Transcript</h3><span id="live-stats" class="fine">0 phrases</span></div>
+          <div id="live-transcript" class="turns" role="log" aria-label="Incoming transcript"><p class="empty-state">Words will appear here as playback advances.</p></div>
+        </section>
+      </div>
+      <section class="panel event-panel">
+        <div class="section-title"><h2>Decision log</h2><span class="fine">Observed updates, not hidden AI reasoning</span></div>
+        <p class="helper">Each entry records the input, matched phrases and actual rule result at that point. Pause or seek the demo to inspect how the available context changes.</p>
+        <ol id="live-events" class="event-list"><li class="empty-state">No input has been analysed yet.</li></ol>
+      </section>
+    </section>
+
+    <section id="view-review" data-workspace="review" hidden aria-label="Transcript lab">
+      <section class="panel transcript-audio-lab">
+        <div class="section-title"><h2>Audio-to-analysis lab</h2><span class="tag">ACTUAL WAVEFORM → LOCAL ASR</span></div>
+        <p class="helper">Upload a real call clip or record the microphone. AegisVoice sends the audio bytes to the local speech model, places only the recognized words into the transcript, and then runs fraud-request analysis. No supplied transcript is substituted.</p>
+        <div class="audio-lab-grid">
+          <div>
+            <label for="lab-audio">Upload call audio or video</label><input type="file" id="lab-audio" accept=".wav,.mp3,.m4a,.mp4,.mov,.webm,.ogg,.flac,audio/*,video/mp4,video/quicktime">
+            <div class="button-row"><button id="lab-record">Record microphone</button><button id="lab-stop" disabled>Stop recording</button></div>
+            <audio id="lab-playback" controls hidden></audio>
+            <p id="lab-audio-status" class="fine" role="status">WAV, MP3, M4A, MP4, MOV, WebM, OGG or FLAC. Maximum 64 MB / 2 minutes.</p>
+          </div>
+          <div>
+            <div class="button-row"><button id="lab-transcribe" class="primary" disabled>Transcribe &amp; analyze audio</button><button id="lab-replay" disabled>Inspect replay</button><button id="lab-deepfake" disabled>Run Pella + AASIST</button></div>
+            <div id="lab-model-result" class="replay-result" hidden></div>
+            <p id="lab-transcript-preview" class="sample-preview">Recognized words and the resulting assessment will appear in the conversation and analysis panels below.</p>
+          </div>
+        </div>
+      </section>
+      <section class="panel case-library">
+        <div class="section-title"><h2>Authored call library</h2><span id="case-count" class="tag">18 CASES</span></div>
+        <p class="helper">Six scam-like, six genuine and six unclear multi-turn examples. The reference label is an author note for comparison—it is never passed to the assessment engine.</p>
+        <div class="case-controls">
+          <div><label for="case-filter">Reference group</label><select id="case-filter"></select></div>
+          <div><label for="case-select">Call</label><select id="case-select"></select></div>
+        </div>
+        <div class="case-preview">
+          <div>
+            <span id="case-reference" class="case-reference"></span><h3 id="case-title"></h3><p id="case-summary"></p>
+            <div class="case-rule-result"><span>Current rule result</span><b id="case-result"></b><p id="case-reason"></p></div>
+            <p class="fine"><b>Why this reference was authored:</b> <span id="case-why"></span></p>
+            <div class="button-row"><button id="case-load" class="primary">Open and explain in lab</button><button id="case-audio" hidden>Open matching audio</button></div>
+          </div>
+          <pre id="case-transcript" class="case-transcript"></pre>
+        </div>
+      </section>
+      <div class="workspace">
+        <section class="panel conversation">
+          <div class="section-title"><h2>Conversation</h2><span id="turn-count" class="fine">0 turns</span></div>
+          <p class="helper">Add caller and employee turns. The rule engine evaluates caller instructions; employee turns supply conversational context.</p>
+          <details><summary>Load a text example</summary><div class="demo-row"><button data-demo="suspicious">Payment pressure</button><button data-demo="legitimate">Legitimate payment</button><button data-demo="negation">Negation &amp; quotes</button><button data-demo="arrest">Digital arrest</button><button data-demo="lure">Reward lure</button></div></details>
+          <div id="turns" class="turns"><p class="empty-state">Add a turn below to start.</p></div>
+          <form id="turn-form">
+            <label for="role">Speaker</label><select id="role"><option value="caller">Caller</option><option value="employee">Employee</option></select>
+            <label for="utterance">Transcript</label><textarea id="utterance" rows="5" maxlength="20000" placeholder="Paste Caller: and Employee: lines, or enter one turn..."></textarea>
+            <button class="primary" type="submit">Analyze text</button><p id="input-status" class="fine" role="status">Text stays in this session.</p>
+          </form>
+        </section>
+        <section class="panel analysis">
+          <div class="section-title"><h2>Request assessment</h2><span class="tag">TEXT EVIDENCE</span></div>
+          <div id="assessment" class="assessment neutral" aria-live="polite"></div>
+          <dl class="metrics"><div><dt>Requested action</dt><dd id="actions">Not assessed</dd></div><div><dt>Category matches</dt><dd id="count">0</dd></div></dl>
+          <div id="category-list" class="category-list"></div>
+          <div class="section-title compact"><h3>Supporting evidence</h3><span id="evidence-count" class="fine"></span></div><div id="evidence" class="evidence"></div>
+          <details id="excluded-wrap" hidden><summary>Why some phrases were excluded</summary><div id="excluded"></div></details>
+          <details><summary>Learned classifier (separate signal)</summary><div id="learned-result"></div></details>
+        </section>
+      </div>
+      <details class="panel reasoning-panel" id="reasoning-panel"><summary>Inspect the decision explanation <span id="reasoning-count" class="fine">No analysis yet</span></summary><p class="helper">A structured explanation of the rule result, not a model's private reasoning. No artificial step delays.</p><ol id="reasoning-stream" class="reasoning-stream"></ol></details>
+    </section>
+
+    <section id="view-verify" data-workspace="verify" hidden aria-label="Voice check">
+      <p class="view-notice">A correct phrase is not proof of liveness. Replay and channel measurements are limited supporting signals, not identity or deepfake detection.</p>
+      <div class="workspace">
+        <section class="panel">
+          <div class="section-title"><h2>Reference caller audio</h2><span class="tag">OPTIONAL</span></div>
+          <label for="call-audio">Upload a caller audio or video clip</label><input type="file" id="call-audio" accept=".wav,.mp3,.m4a,.mp4,.mov,.webm,.ogg,.flac,audio/*,video/mp4,video/quicktime">
+          <p class="fine">Only the audio stream is analyzed. Up to 2 minutes / 64 MB.</p>
+          <div class="button-row"><button id="transcribe-call" disabled>Transcribe &amp; analyze</button><button id="inspect-call" disabled>Inspect replay evidence</button><button id="deepfake-call" disabled>Run Pella + AASIST</button></div>
+          <p id="asr-status" role="status" class="fine">Checking local services...</p><div id="call-replay" class="replay-result" hidden></div><div id="call-deepfake" class="replay-result" hidden></div>
+          <details><summary>Channel comparison limits</summary><p>Changing a microphone, codec or room changes audio statistics even for a genuine caller. A matching channel does not establish liveness. These thresholds were explored on synthetic signals, not validated on real calls.</p></details>
+        </section>
+        <section class="panel challenge">
+          <div class="section-title"><h2>Fresh phrase challenge</h2></div>
+          <button id="generate" class="primary">Issue a fresh phrase</button>
+          <div class="phrase-box"><div id="challenge-status" class="eyebrow">NO ACTIVE CHALLENGE</div><div id="phrase">Waiting for a challenge</div><p id="expiry" class="fine">Single use. Expires in two minutes.</p></div>
+          <div class="button-row"><button id="record" disabled>Record reply</button><button id="stop" disabled>Stop recording</button></div><p id="record-status" role="status" class="fine">Microphone idle</p>
+          <audio id="playback" controls hidden></audio><a id="download-audio" hidden>Download recording</a>
+          <div class="button-row"><button id="transcribe-reply" disabled>Transcribe reply</button><button id="inspect-reply" disabled>Inspect replay</button><button id="deepfake-reply" disabled>Run Pella + AASIST</button><button id="compare-speaker" disabled>Compare enrolled reference</button></div><div id="reply-replay" class="replay-result" hidden></div><div id="reply-deepfake" class="replay-result" hidden></div><div id="speaker-result" class="replay-result" hidden></div>
+          <details><summary>Optional manual timing</summary><div class="button-row"><button id="prompt-end" disabled>Mark prompt end</button><button id="reply-start" disabled>Mark reply start</button></div><p id="timing-status" class="fine">Timing is recorded, not used to decide authenticity.</p></details>
+          <label for="response">Review or enter the response</label><input id="response" autocomplete="off" placeholder="Only the words in the caller's reply" disabled>
+          <button id="check" disabled>Check phrase</button><div id="challenge-result" class="challenge-result" role="status">No response checked.</div><div id="liveness" class="liveness-result" role="status" hidden></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="view-data" data-workspace="data" hidden aria-label="Evidence library">
+      <section class="panel dataset-lab" id="dataset-lab">
+        <div class="section-title"><h2>Evidence library</h2><button id="download-report">Export reports</button></div>
+        <p class="helper">Saved evaluation artifacts and source records, separate from current inference. Synthetic English benchmark scores do not demonstrate real-call performance.</p>
+        <p id="catalogue-sources" class="helper"></p>
+        <section class="human-data-section" aria-labelledby="human-data-title">
+          <div class="section-title compact"><h3 id="human-data-title">Real human datasets — detection &amp; analysis</h3><span class="tag">EVIDENCE-BOUNDED</span></div>
+          <p class="helper">This section identifies exactly where recorded human speech or human-originated call material enters AegisVoice, which detector consumes it, and what conclusion the evidence permits.</p>
+          <div id="real-human-analysis" class="human-analysis-grid"><p>Checking local human-data evidence…</p></div>
+        </section>
+        <div class="section-title compact"><h3>External datasets used</h3><span class="tag">PUBLIC RESEARCH SOURCES</span></div>
+        <div id="external-datasets" class="external-datasets"></div>
+        <div class="section-title compact"><h3>Interactive human-vishing coverage</h3><span class="tag">DEPLOYMENT GATE</span></div>
+        <div id="human-vishing-coverage" class="audit-grid"><p>Checking the local provenance manifest…</p></div>
+        <div class="section-title compact"><h3>Stored diagnostics</h3><span class="fine">Expandable saved reports</span></div>
+        <div id="audit-grid" class="audit-grid"></div>
+        <details><summary>Detailed stored metrics and limitations</summary><div id="dataset-metrics" class="dataset-metrics"></div><div id="source-list"></div></details>
+        <div class="dataset-grid">
+          <div>
+            <h3>Conversation records</h3><p class="fine">BothBosu synthetic conversations plus the downloaded Fraud Call India text corpus. Source and modality are shown per record.</p>
+            <div class="filter-row"><label for="text-label">Reference label</label><select id="text-label"><option value="">All labels</option><option value="1">Scam</option><option value="0">Non-scam</option></select><label class="check-label"><input type="checkbox" id="text-errors"> Saved model errors only</label></div>
+            <label for="text-sample">Record</label><select id="text-sample" class="sample-select"></select>
+            <div class="sample-nav"><button id="text-prev">Previous</button><span id="text-page" class="fine"></span><button id="text-next">Next</button></div>
+            <p id="text-preview" class="sample-preview"></p><button id="load-text" class="primary">Open in transcript lab</button><p id="text-sample-status" role="status" class="fine"></p>
+          </div>
+          <div>
+            <h3>Replay audio records</h3><p class="fine">ASVspoof 2017 V2. CC BY-NC 4.0. These are replay-test phrases, not scam calls.</p>
+            <div class="filter-row"><label for="audio-label">Reference label</label><select id="audio-label"><option value="">All labels</option><option value="1">Replay</option><option value="0">Genuine</option></select><label class="check-label"><input type="checkbox" id="audio-errors"> Saved model errors only</label></div>
+            <label for="audio-sample">Record</label><select id="audio-sample" class="sample-select"></select>
+            <div class="sample-nav"><button id="audio-prev">Previous</button><span id="audio-page" class="fine"></span><button id="audio-next">Next</button></div>
+            <audio id="dataset-playback" controls preload="none"></audio><p id="audio-preview" class="sample-preview"></p>
+            <div class="button-row"><button id="run-audio" disabled>Run replay model</button><button id="use-reply" disabled>Use as challenge reply</button></div><div id="dataset-audio-result" class="replay-result" hidden></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section id="view-attack" data-workspace="attack" hidden aria-label="Attack-path laboratory">
+      <p class="view-notice"><b>Experimental attack-path hypothesis.</b> The four support scores are normalized evidence weights, not probabilities. The model is calibrated on controlled simulations only and can return <b>Uncertain</b>. It does not prove a voice is cloned.</p>
+      <section class="panel attack-hero">
+        <div class="section-title"><h2>How audio reaches the call</h2><span id="attack-state" class="tag">WAITING FOR AUDIO</span></div>
+        <div class="signal-model" aria-label="Attack-path signal model">
+          <div class="signal-node input"><span>01</span><b>Incoming audio</b><small id="attack-input-label">No source</small></div>
+          <div class="signal-arrow" aria-hidden="true">→</div>
+          <div class="signal-node features"><span>02</span><b>Measured signal</b><small>space · channel · continuity · spectral texture</small></div>
+          <div class="signal-arrow" aria-hidden="true">→</div>
+          <div class="signal-node model"><span>03</span><b>Path hypotheses</b><small>support + contradictions + uncertainty</small></div>
+          <div class="signal-arrow" aria-hidden="true">→</div>
+          <div class="signal-node action"><span>04</span><b>Response</b><small id="attack-action">Collect at least four seconds</small></div>
+        </div>
+      </section>
+      <div class="attack-grid">
+        <section class="panel attack-source">
+          <div class="section-title"><h2>1. Choose a real input path</h2><span class="tag">LABEL NOT FED TO MODEL</span></div>
+          <div class="attack-source-grid">
+            <button id="attack-direct" class="attack-source-card selected" aria-pressed="true"><b>Direct digital file</b><span>Known injected WAV bytes</span></button>
+            <button id="attack-mic" class="attack-source-card" aria-pressed="false"><b>Microphone</b><span>Speak live or replay through a speaker</span></button>
+            <button id="attack-share" class="attack-source-card" aria-pressed="false"><b>Shared / tab audio</b><span>Virtual cable, browser call or live VC output</span></button>
+          </div>
+          <div id="attack-direct-controls">
+            <label for="attack-demo-select">Local waveform</label>
+            <select id="attack-demo-select">
+              <option value="payment-pressure">Payment pressure TTS</option>
+              <option value="legitimate-payment">Legitimate payment TTS</option>
+              <option value="digital-arrest">Digital-arrest TTS</option>
+              <option value="refund-lure">Refund-lure TTS</option>
+            </select>
+            <audio id="attack-player" controls preload="metadata"></audio>
+            <button id="attack-analyze-file" class="primary">Play + analyze waveform</button>
+            <p class="fine">The provenance is known: this is a digital file. The model must report that evidence instead of pretending to infer it only from acoustics.</p>
+          </div>
+          <div id="attack-capture-controls" hidden>
+            <p id="attack-capture-help" class="source-disclosure">Microphone capture measures the acoustic path. To test replay, play a clip through another speaker into this microphone.</p>
+            <div id="attack-speaker-helper">
+              <label for="attack-replay-select">Speaker-replay test clip</label>
+              <select id="attack-replay-select">
+                <option value="payment-pressure">Payment pressure TTS</option>
+                <option value="digital-arrest">Digital-arrest TTS</option>
+                <option value="legitimate-payment">Legitimate payment TTS</option>
+              </select>
+              <audio id="attack-replay-player" controls preload="metadata"></audio>
+              <p class="fine">Start microphone capture, then play this clip aloud. The waveform travels through the laptop speaker, room and microphone. The clip name is not fed into classification.</p>
+            </div>
+            <div class="button-row"><button id="attack-start-capture" class="primary">Start 12-second capture</button><button id="attack-stop-capture" disabled>Stop</button></div>
+            <label for="attack-level">Input level</label><meter id="attack-level" min="0" max="1" value="0"></meter>
+            <label for="attack-reference-label">Optional lab label (comparison only)</label>
+            <select id="attack-reference-label">
+              <option value="">Unlabelled capture</option>
+              <option value="live-human">I am speaking live</option>
+              <option value="speaker-replay">I am replaying through a speaker</option>
+              <option value="live-voice-conversion">External live voice conversion</option>
+              <option value="direct-injection">External pre-generated injection</option>
+            </select>
+          </div>
+          <p id="attack-status" class="fine" role="status">Choose a path and start analysis.</p>
+          <details><summary>Controlled calibration simulations</summary><p>These deterministic proxies exercise the visual model. They are not real captured attacks, and their labels are not fed into scoring.</p><div id="attack-simulations" class="demo-row">
+            <button data-attack-simulation="noisy-live-like-acoustic">Live-like proxy</button>
+            <button data-attack-simulation="voice-conversion-proxy">VC-processing proxy</button>
+            <button data-attack-simulation="direct-clean-digital">Digital proxy</button>
+            <button data-attack-simulation="speaker-replay-fir">Speaker-replay proxy</button>
+          </div></details>
+          <button id="attack-reset">Reset attack lab</button>
+        </section>
+        <section class="panel attack-result">
+          <div class="section-title"><h2>2. Attack-path support</h2><span id="attack-windows" class="fine">0 windows</span></div>
+          <div id="attack-verdict" class="attack-verdict uncertain"><span>UNCERTAIN</span><b>Insufficient audio</b><p>Support bars remain hypotheses until enough audio is observed.</p></div>
+          <div id="attack-bars" class="attack-bars" aria-label="Normalized hypothesis support">
+            <div data-class="live-human"><header><span>Live human</span><b>—</b></header><div><i></i></div><p>No evidence yet.</p></div>
+            <div data-class="live-voice-conversion"><header><span>Live voice conversion</span><b>—</b></header><div><i></i></div><p>No evidence yet.</p></div>
+            <div data-class="direct-injection"><header><span>Injected pre-generated</span><b>—</b></header><div><i></i></div><p>No evidence yet.</p></div>
+            <div data-class="speaker-replay"><header><span>Replay through speaker</span><b>—</b></header><div><i></i></div><p>No evidence yet.</p></div>
+          </div>
+          <div class="uncertainty-row"><span>Uncertainty</span><meter id="attack-uncertainty" min="0" max="1" value="1"></meter><b id="attack-uncertainty-label">High</b></div>
+        </section>
+      </div>
+      <div class="attack-grid visuals">
+        <section class="panel">
+          <div class="section-title"><h2>3. Live signal view</h2><span class="fine">rolling 4 s / 1 s step</span></div>
+          <div class="canvas-stack">
+            <figure><figcaption>Waveform</figcaption><canvas id="attack-waveform" width="720" height="150"></canvas></figure>
+            <figure><figcaption>Spectrum</figcaption><canvas id="attack-spectrum" width="720" height="150"></canvas></figure>
+            <figure><figcaption>Noise-floor continuity</figcaption><canvas id="attack-continuity" width="720" height="120"></canvas></figure>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="section-title"><h2>4. Measured evidence</h2><span class="tag">NOT DEEPFAKE PROOF</span></div>
+          <div id="attack-features" class="feature-grid">
+            <div><span>Acoustic space</span><b>—</b><small>Reverberation proxy</small></div>
+            <div><span>Microphone path</span><b>—</b><small>Capture provenance + channel</small></div>
+            <div><span>Compression history</span><b>—</b><small>Spectral / clipping proxy</small></div>
+            <div><span>Noise continuity</span><b>—</b><small>Window-to-window stability</small></div>
+            <div><span>Harmonic texture</span><b>—</b><small>Signal periodicity proxy</small></div>
+            <div><span>Evidence coverage</span><b>0 s</b><small>Usable analysed speech</small></div>
+          </div>
+          <details><summary>Why the current result?</summary><ul id="attack-evidence-list"><li>Collect audio to populate evidence.</li></ul></details>
+          <details><summary>Contradictions and limits</summary><ul id="attack-contradictions"><li>No result yet.</li></ul></details>
+        </section>
+      </div>
+      <section class="panel">
+        <div class="section-title"><h2>Window timeline</h2><button id="attack-export">Export attack-lab session</button></div>
+        <div id="attack-timeline" class="attack-timeline"><p class="empty-state">Each completed analysis window will appear here.</p></div>
+      </section>
+    </section>
+    <footer>Local prototype / No caller authentication / Exports are explicit</footer>
+  </main>
+  <script type="module" src="/app.js"></script>
+  <script type="module" src="/visuals.js"></script>
+</body>
+</html>

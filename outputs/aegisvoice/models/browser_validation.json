@@ -1,0 +1,18 @@
+{
+  "tested_date": "2026-09-06",
+  "surface": "Codex in-app browser, http://127.0.0.1:4173/",
+  "passed": 10,
+  "checks": [
+    "Downloaded non-scam conversation scam_single-test-0000 loaded 13 turns and fresh model returned non-scam score 0.034",
+    "Downloaded scam conversation scam_single-test-0160 loaded 21 turns and fresh model returned scam score 0.984",
+    "Actual public audio E_1000001 returned replay-like score 0.787 in the dataset interface",
+    "Text model errors filter displayed both held-out classification mistakes",
+    "Audio model errors filter displayed all 4,515 binary classification mistakes",
+    "Downloaded E_1000003 loaded into challenge response and local ASR returned My voice is my password",
+    "Replay inference on E_1000003 exposed a genuine-like score 0.164 despite its replay source label; the error was not hidden",
+    "Prerecorded transcript failed the fresh phrase RIVER 59 BASKET and consumed the challenge",
+    "A new challenge cleared prior response and replay evidence; silver sixty-one orange completed SILVER 61 ORANGE without clearing request risk",
+    "Screenshot inspected at narrow in-app browser width: readable controls and result panels without horizontal clipping"
+  ],
+  "scope": "Observed browser interactions using actual downloaded records plus manual phrase-entry testing. Does not test hardware microphone capture, genuine live caller timing, or identity authentication."
+}

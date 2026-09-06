@@ -1,0 +1,13 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.10.0
+torchaudio==2.10.0
+transformers==4.56.2
+speechbrain==1.0.3
+faster-whisper==1.2.1
+huggingface-hub==0.34.4
+soundfile==0.13.1
+av==16.1.0
+numpy==1.26.4
+scipy==1.16.2
+scikit-learn==1.7.2
+joblib==1.5.3

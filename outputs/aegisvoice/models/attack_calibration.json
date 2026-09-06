@@ -1,0 +1,444 @@
+{
+  "artifact_version": 3,
+  "deterministic": true,
+  "generated_by": "tools/calibrate-attack-model.mjs",
+  "generator_module": "attack-simulations.mjs",
+  "method": "Deterministic synthetic speech-like signals under controlled transforms shared with the visible Attack Lab. These simulations are not real attack classes and do not measure field performance.",
+  "support_semantics": "Scores are normalized relative display support from heuristic cues, not calibrated class likelihoods.",
+  "api_contract": {
+    "version": 1,
+    "observation": {
+      "signature": "extractAttackObservation(pcm, rate, previous?)",
+      "shape": {
+        "schemaVersion": "number",
+        "sequence": "non-negative integer",
+        "usable": "boolean",
+        "reason": "string|null",
+        "profile": "channelProfile object",
+        "metrics": "DSP metrics object",
+        "pcmSummary": "bounded PCM analysis summary object",
+        "temporal": "backward-looking comparison object",
+        "start": "number|null",
+        "end": "number|null"
+      }
+    },
+    "classifier": {
+      "signature": "classifyAttackPath(observations, { captureKind, knownSource, labCondition? })",
+      "class_keys": [
+        "live-human",
+        "live-voice-conversion",
+        "direct-injection",
+        "speaker-replay"
+      ],
+      "primary_shape": {
+        "classes": "object keyed by all four class keys",
+        "uncertainty": "number from 0 through 1",
+        "sufficientEvidence": "boolean",
+        "topClass": "one class key or uncertain",
+        "margin": "number from 0 through 1",
+        "evidence": "evidence item array",
+        "contradictions": "contradiction item array",
+        "coverageSeconds": "bounded sum of usable observation durations"
+      }
+    }
+  },
+  "configuration": {
+    "sample_rate": 16000,
+    "trials_per_condition": 12,
+    "windows_per_trial": 4,
+    "seconds_per_window": 1.1,
+    "model_limits": {
+      "maxWindowSeconds": 4,
+      "maxSampleRate": 16000,
+      "minSampleRate": 8000,
+      "maxRollingWindows": 12,
+      "minimumWindowSeconds": 0.75,
+      "minimumWindows": 3,
+      "minimumSummedAudioSeconds": 2.4,
+      "minimumSummedSpeechSeconds": 1,
+      "minimumTransitions": 2,
+      "minimumTopSupport": 0.4,
+      "minimumDecisionMargin": 0.08,
+      "maximumDecisionUncertainty": 0.55
+    }
+  },
+  "conditions": [
+    {
+      "id": "direct-clean-digital",
+      "label": "Direct digital proxy",
+      "expected_simulation_label": "direct-injection",
+      "capture_context": {
+        "captureKind": "digital-file",
+        "knownSource": true
+      },
+      "transform": "Clean digital speech with deterministic low-level dither.",
+      "trials": 12,
+      "decisions": {
+        "live-human": 0,
+        "live-voice-conversion": 0,
+        "direct-injection": 12,
+        "speaker-replay": 0,
+        "uncertain": 0
+      },
+      "sufficient_evidence_trials": 12,
+      "feature_mean": {
+        "acousticSpace": 0.1551,
+        "reverbProxySeconds": 0.0174,
+        "highBandRatio": 0.1302,
+        "spectralFlatness": 0.4295,
+        "spectralCentroidHz": 1511.3755,
+        "spectralTiltDb": 5.451,
+        "zeroCrossingRate": 0.1057,
+        "snrDb": 36.4736,
+        "silenceRatio": 0.3666,
+        "crestFactor": 6.5597,
+        "harmonicity": 0.4006,
+        "noiseFloorRms": 0.0029,
+        "featureDrift": 0.3577,
+        "noiseContinuity": 0.8389
+      },
+      "support_mean": {
+        "live-human": 0.0878,
+        "live-voice-conversion": 0.0491,
+        "direct-injection": 0.8091,
+        "speaker-replay": 0.0539
+      },
+      "support_range": {
+        "live-human": {
+          "min": 0.0633,
+          "max": 0.0996
+        },
+        "live-voice-conversion": {
+          "min": 0.046,
+          "max": 0.0545
+        },
+        "direct-injection": {
+          "min": 0.7955,
+          "max": 0.8437
+        },
+        "speaker-replay": {
+          "min": 0.0375,
+          "max": 0.0758
+        }
+      },
+      "margin": {
+        "min": 0.6958,
+        "p50": 0.6958,
+        "p90": 0.7381,
+        "max": 0.7805
+      },
+      "uncertainty": {
+        "min": 0.08,
+        "mean": 0.0867,
+        "max": 0.16
+      }
+    },
+    {
+      "id": "noisy-live-like-acoustic",
+      "label": "Live-human proxy",
+      "expected_simulation_label": "live-human",
+      "capture_context": {
+        "captureKind": "microphone",
+        "knownSource": false
+      },
+      "transform": "Speech-like signal with early reflections and colored background noise.",
+      "trials": 12,
+      "decisions": {
+        "live-human": 11,
+        "live-voice-conversion": 0,
+        "direct-injection": 0,
+        "speaker-replay": 0,
+        "uncertain": 1
+      },
+      "sufficient_evidence_trials": 12,
+      "feature_mean": {
+        "acousticSpace": 0.1525,
+        "reverbProxySeconds": 0.0133,
+        "highBandRatio": 0.1284,
+        "spectralFlatness": 0.4228,
+        "spectralCentroidHz": 1490.9191,
+        "spectralTiltDb": 5.532,
+        "zeroCrossingRate": 0.1258,
+        "snrDb": 35.5712,
+        "silenceRatio": 0.3666,
+        "crestFactor": 6.522,
+        "harmonicity": 0.4053,
+        "noiseFloorRms": 0.0031,
+        "featureDrift": 0.339,
+        "noiseContinuity": 0.7121
+      },
+      "support_mean": {
+        "live-human": 0.4265,
+        "live-voice-conversion": 0.1038,
+        "direct-injection": 0.1585,
+        "speaker-replay": 0.3112
+      },
+      "support_range": {
+        "live-human": {
+          "min": 0.3901,
+          "max": 0.4515
+        },
+        "live-voice-conversion": {
+          "min": 0.0909,
+          "max": 0.1184
+        },
+        "direct-injection": {
+          "min": 0.1297,
+          "max": 0.1905
+        },
+        "speaker-replay": {
+          "min": 0.2935,
+          "max": 0.3279
+        }
+      },
+      "margin": {
+        "min": 0.0891,
+        "p50": 0.1096,
+        "p90": 0.1268,
+        "max": 0.1268
+      },
+      "uncertainty": {
+        "min": 0.3261,
+        "mean": 0.3436,
+        "max": 0.3838
+      }
+    },
+    {
+      "id": "speaker-replay-fir",
+      "label": "Speaker-replay proxy",
+      "expected_simulation_label": "speaker-replay",
+      "capture_context": {
+        "captureKind": "microphone",
+        "knownSource": false
+      },
+      "transform": "Low-pass speaker coloration, sparse echoes and recapture noise.",
+      "trials": 12,
+      "decisions": {
+        "live-human": 0,
+        "live-voice-conversion": 0,
+        "direct-injection": 0,
+        "speaker-replay": 5,
+        "uncertain": 7
+      },
+      "sufficient_evidence_trials": 12,
+      "feature_mean": {
+        "acousticSpace": 0.2226,
+        "reverbProxySeconds": 0.0241,
+        "highBandRatio": 0.01,
+        "spectralFlatness": 0.0793,
+        "spectralCentroidHz": 604.867,
+        "spectralTiltDb": 13.9245,
+        "zeroCrossingRate": 0.0732,
+        "snrDb": 33.7552,
+        "silenceRatio": 0.2693,
+        "crestFactor": 5.6487,
+        "harmonicity": 0.727,
+        "noiseFloorRms": 0.0038,
+        "featureDrift": 0.1984,
+        "noiseContinuity": 0.6378
+      },
+      "support_mean": {
+        "live-human": 0.389,
+        "live-voice-conversion": 0.0805,
+        "direct-injection": 0.0746,
+        "speaker-replay": 0.456
+      },
+      "support_range": {
+        "live-human": {
+          "min": 0.3457,
+          "max": 0.4212
+        },
+        "live-voice-conversion": {
+          "min": 0.0742,
+          "max": 0.0921
+        },
+        "direct-injection": {
+          "min": 0.0545,
+          "max": 0.1064
+        },
+        "speaker-replay": {
+          "min": 0.4244,
+          "max": 0.4847
+        }
+      },
+      "margin": {
+        "min": 0.0287,
+        "p50": 0.0414,
+        "p90": 0.1098,
+        "max": 0.1152
+      },
+      "uncertainty": {
+        "min": 0.3438,
+        "mean": 0.4175,
+        "max": 0.476
+      }
+    },
+    {
+      "id": "voice-conversion-proxy",
+      "label": "VC-processing proxy",
+      "expected_simulation_label": "live-voice-conversion",
+      "capture_context": {
+        "captureKind": "shared-audio",
+        "knownSource": false
+      },
+      "transform": "Quantization, all-pass phase change and spectral smoothing; not a real vocoder.",
+      "trials": 12,
+      "decisions": {
+        "live-human": 0,
+        "live-voice-conversion": 0,
+        "direct-injection": 0,
+        "speaker-replay": 0,
+        "uncertain": 12
+      },
+      "sufficient_evidence_trials": 12,
+      "feature_mean": {
+        "acousticSpace": 0.1115,
+        "reverbProxySeconds": 0,
+        "highBandRatio": 0.0017,
+        "spectralFlatness": 0.0269,
+        "spectralCentroidHz": 551.0422,
+        "spectralTiltDb": 17.0229,
+        "zeroCrossingRate": 0.0307,
+        "snrDb": 32.6184,
+        "silenceRatio": 0.3619,
+        "crestFactor": 6.4973,
+        "harmonicity": 0.7021,
+        "noiseFloorRms": 0.0038,
+        "featureDrift": 0.1375,
+        "noiseContinuity": 0.8747
+      },
+      "support_mean": {
+        "live-human": 0.2505,
+        "live-voice-conversion": 0.2016,
+        "direct-injection": 0.2436,
+        "speaker-replay": 0.3043
+      },
+      "support_range": {
+        "live-human": {
+          "min": 0.2505,
+          "max": 0.2505
+        },
+        "live-voice-conversion": {
+          "min": 0.2016,
+          "max": 0.2016
+        },
+        "direct-injection": {
+          "min": 0.2436,
+          "max": 0.2436
+        },
+        "speaker-replay": {
+          "min": 0.3043,
+          "max": 0.3043
+        }
+      },
+      "margin": {
+        "min": 0.0538,
+        "p50": 0.0538,
+        "p90": 0.0538,
+        "max": 0.0538
+      },
+      "uncertainty": {
+        "min": 0.5627,
+        "mean": 0.5627,
+        "max": 0.5627
+      }
+    }
+  ],
+  "confusion_counts": {
+    "direct-injection": {
+      "live-human": 0,
+      "live-voice-conversion": 0,
+      "direct-injection": 12,
+      "speaker-replay": 0,
+      "uncertain": 0
+    },
+    "live-human": {
+      "live-human": 11,
+      "live-voice-conversion": 0,
+      "direct-injection": 0,
+      "speaker-replay": 0,
+      "uncertain": 1
+    },
+    "speaker-replay": {
+      "live-human": 0,
+      "live-voice-conversion": 0,
+      "direct-injection": 0,
+      "speaker-replay": 5,
+      "uncertain": 7
+    },
+    "live-voice-conversion": {
+      "live-human": 0,
+      "live-voice-conversion": 0,
+      "direct-injection": 0,
+      "speaker-replay": 0,
+      "uncertain": 12
+    }
+  },
+  "overlap": {
+    "any_pairwise_support_overlap": true,
+    "pairwise_support_overlap": [
+      {
+        "conditions": [
+          "direct-clean-digital",
+          "noisy-live-like-acoustic"
+        ],
+        "overlapping_support_classes": []
+      },
+      {
+        "conditions": [
+          "direct-clean-digital",
+          "speaker-replay-fir"
+        ],
+        "overlapping_support_classes": []
+      },
+      {
+        "conditions": [
+          "direct-clean-digital",
+          "voice-conversion-proxy"
+        ],
+        "overlapping_support_classes": []
+      },
+      {
+        "conditions": [
+          "noisy-live-like-acoustic",
+          "speaker-replay-fir"
+        ],
+        "overlapping_support_classes": [
+          {
+            "class": "live-human",
+            "interval_width": 0.0311
+          },
+          {
+            "class": "live-voice-conversion",
+            "interval_width": 0.0012
+          }
+        ]
+      },
+      {
+        "conditions": [
+          "noisy-live-like-acoustic",
+          "voice-conversion-proxy"
+        ],
+        "overlapping_support_classes": [
+          {
+            "class": "speaker-replay",
+            "interval_width": 0
+          }
+        ]
+      },
+      {
+        "conditions": [
+          "speaker-replay-fir",
+          "voice-conversion-proxy"
+        ],
+        "overlapping_support_classes": []
+      }
+    ]
+  },
+  "limitations": [
+    "Controlled simulations exercise software behavior; they are not recordings of real human, voice-conversion, injection, or speaker-replay attacks.",
+    "The visible lab and calibration now import the same generator module, but that does not create deployment validity.",
+    "Support weights are not probabilities and cannot establish identity or voice authenticity.",
+    "Microphones, rooms, loudspeakers, codecs and real voice-conversion systems require independent field evaluation."
+  ]
+}

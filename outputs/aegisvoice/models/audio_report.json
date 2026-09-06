@@ -1,0 +1,75 @@
+{
+  "model": "LFCC/delta statistics + RBF SVM; development Platt calibration",
+  "training_source": "ASVspoof 2017 V2 official train",
+  "train_count": 3014,
+  "development_count": 1710,
+  "evaluation_count": 13306,
+  "feature_dimensions": 480,
+  "selected_C": 1,
+  "threshold": 0.6000000000000002,
+  "uncertain_below": 0.7600000000000003,
+  "genuine_like_max": 0.28,
+  "replay_like_min": 0.7600000000000003,
+  "speaker_overlap": {
+    "train_dev": [],
+    "train_eval": [],
+    "dev_eval": []
+  },
+  "development": {
+    "n": 1710,
+    "positive": 950,
+    "negative": 760,
+    "accuracy": 0.8982456140350877,
+    "balanced_accuracy": 0.8999999999999999,
+    "precision": 0.9292035398230089,
+    "recall": 0.8842105263157894,
+    "f1": 0.9061488673139159,
+    "auroc": 0.9620637119113573,
+    "eer_approx": 0.10421052631578942,
+    "false_positive_rate": 0.08421052631578947,
+    "false_negative_rate": 0.11578947368421053,
+    "confusion": {
+      "tn": 696,
+      "fp": 64,
+      "fn": 110,
+      "tp": 840
+    },
+    "threshold": 0.6000000000000002
+  },
+  "held_out_test": {
+    "n": 13306,
+    "positive": 12008,
+    "negative": 1298,
+    "accuracy": 0.6606793927551481,
+    "balanced_accuracy": 0.7223287967241151,
+    "precision": 0.9674360573923892,
+    "recall": 0.6457361758827448,
+    "f1": 0.7745093142885682,
+    "auroc": 0.8044626643357433,
+    "eer_approx": 0.26673467046622235,
+    "false_positive_rate": 0.20107858243451462,
+    "false_negative_rate": 0.35426382411725515,
+    "confusion": {
+      "tn": 1037,
+      "fp": 261,
+      "fn": 4254,
+      "tp": 7754
+    },
+    "threshold": 0.6000000000000002
+  },
+  "limitations": [
+    "Replay evidence only: not trained to detect modern TTS, voice conversion, caller identity or live challenge timing.",
+    "ASVspoof 2017 contains known recording/channel artifacts; benchmark scores do not establish deployment performance.",
+    "Thresholds are selected on development; actual held-out error rates below may exceed their development targets.",
+    "Audio outside these recording conditions can produce unreliable scores. A genuine-like score does not establish authenticity."
+  ],
+  "selective_test": {
+    "coverage": 0.7684503231624831,
+    "uncertain": 3081,
+    "confident_count": 10225,
+    "confident_accuracy": 0.7353545232273838,
+    "attack_acceptance_rate": 0.20894403730846103,
+    "genuine_rejection_rate": 0.1517719568567026
+  },
+  "trained_at": "2026-09-06T20:25:20Z"
+}

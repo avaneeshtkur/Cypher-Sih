@@ -1,0 +1,4 @@
+import {readFile} from 'node:fs/promises';import {resolve} from 'node:path';
+import {evaluateHumanVishing} from '../human-vishing-evaluation.mjs';
+const manifestFile=resolve(process.argv[2]||'../../work/datasets/human-vishing/manifest.json'),predictionsFile=resolve(process.argv[3]||'../../work/datasets/human-vishing/evaluation/predictions.jsonl');
+try{const manifest=JSON.parse(await readFile(manifestFile,'utf8')),lines=(await readFile(predictionsFile,'utf8')).split(/\r?\n/).filter(Boolean),predictions=lines.map((line,index)=>{try{return JSON.parse(line);}catch{throw new Error(`Invalid prediction JSON on line ${index+1}`);}}),result=evaluateHumanVishing(manifest.records||[],predictions);console.log(JSON.stringify({manifestFile,predictionsFile,...result},null,2));if(result.errors.length)process.exitCode=1;}catch(error){console.error(JSON.stringify({error:error.message},null,2));process.exitCode=1;}

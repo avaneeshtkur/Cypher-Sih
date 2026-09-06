@@ -1,0 +1,14 @@
+{
+  "schema_version": "2.0",
+  "dataset_name": "UNPOPULATED — replace only with lawfully collected records",
+  "governance": {
+    "data_controller": "",
+    "ethics_or_legal_review_id": "",
+    "retention_policy_id": "",
+    "redaction_protocol_id": "",
+    "access_policy_id": ""
+  },
+  "artifacts": [],
+  "evaluation": null,
+  "records": []
+}

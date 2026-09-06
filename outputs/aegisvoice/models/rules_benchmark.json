@@ -1,0 +1,478 @@
+{
+  "generated_at": "2026-09-06T09:40:00.495Z",
+  "evaluation_kind": "reused-corpus diagnostic",
+  "engine": "Phrase-and-context rules v0.2 · English",
+  "records": 1920,
+  "label_balance": {
+    "scam": 960,
+    "non_scam": 960
+  },
+  "provenance": "models/text_examples.json contains source-labelled published-test and transfer records. The entire corpus and examples were inspected before and during rule tuning. These reused records measure diagnostic agreement only, not independent generalization.",
+  "label_caveat": "Labels are conversation-level scam/non-scam. The rules answer a narrower question (manipulation combined with a sensitive request), so perfect agreement is not the target and recall gaps are expected.",
+  "throughput_ms_per_record": 0.87,
+  "operating_points": {
+    "any concern": {
+      "n": 1920,
+      "tp": 760,
+      "fp": 97,
+      "tn": 863,
+      "fn": 200,
+      "accuracy": 0.8453,
+      "precision": 0.8868,
+      "recall": 0.7917,
+      "f1": 0.8365,
+      "false_positive_rate": 0.101,
+      "specificity": 0.899
+    },
+    "strongly suspicious only": {
+      "n": 1920,
+      "tp": 33,
+      "fp": 0,
+      "tn": 960,
+      "fn": 927,
+      "accuracy": 0.5172,
+      "precision": 1,
+      "recall": 0.0344,
+      "f1": 0.0665,
+      "false_positive_rate": 0,
+      "specificity": 1
+    }
+  },
+  "by_split": {
+    "published test": {
+      "n": 320,
+      "tp": 112,
+      "fp": 6,
+      "tn": 154,
+      "fn": 48,
+      "accuracy": 0.8313,
+      "precision": 0.9492,
+      "recall": 0.7,
+      "f1": 0.8058,
+      "false_positive_rate": 0.0375,
+      "specificity": 0.9625
+    },
+    "transfer test": {
+      "n": 1600,
+      "tp": 648,
+      "fp": 91,
+      "tn": 709,
+      "fn": 152,
+      "accuracy": 0.8481,
+      "precision": 0.8769,
+      "recall": 0.81,
+      "f1": 0.8421,
+      "false_positive_rate": 0.1138,
+      "specificity": 0.8862
+    }
+  },
+  "by_scenario": {
+    "appointment": {
+      "n": 240,
+      "tp": 0,
+      "fp": 35,
+      "tn": 205,
+      "fn": 0,
+      "accuracy": 0.8542,
+      "precision": 0,
+      "recall": 0,
+      "f1": 0,
+      "false_positive_rate": 0.1458,
+      "specificity": 0.8542
+    },
+    "delivery": {
+      "n": 240,
+      "tp": 0,
+      "fp": 29,
+      "tn": 211,
+      "fn": 0,
+      "accuracy": 0.8792,
+      "precision": 0,
+      "recall": 0,
+      "f1": 0,
+      "false_positive_rate": 0.1208,
+      "specificity": 0.8792
+    },
+    "insurance": {
+      "n": 240,
+      "tp": 0,
+      "fp": 31,
+      "tn": 209,
+      "fn": 0,
+      "accuracy": 0.8708,
+      "precision": 0,
+      "recall": 0,
+      "f1": 0,
+      "false_positive_rate": 0.1292,
+      "specificity": 0.8708
+    },
+    "refund": {
+      "n": 240,
+      "tp": 184,
+      "fp": 0,
+      "tn": 0,
+      "fn": 56,
+      "accuracy": 0.7667,
+      "precision": 1,
+      "recall": 0.7667,
+      "f1": 0.8679,
+      "false_positive_rate": 0,
+      "specificity": 0
+    },
+    "reward": {
+      "n": 240,
+      "tp": 181,
+      "fp": 0,
+      "tn": 0,
+      "fn": 59,
+      "accuracy": 0.7542,
+      "precision": 1,
+      "recall": 0.7542,
+      "f1": 0.8599,
+      "false_positive_rate": 0,
+      "specificity": 0
+    },
+    "ssn": {
+      "n": 240,
+      "tp": 231,
+      "fp": 0,
+      "tn": 0,
+      "fn": 9,
+      "accuracy": 0.9625,
+      "precision": 1,
+      "recall": 0.9625,
+      "f1": 0.9809,
+      "false_positive_rate": 0,
+      "specificity": 0
+    },
+    "support": {
+      "n": 240,
+      "tp": 164,
+      "fp": 0,
+      "tn": 0,
+      "fn": 76,
+      "accuracy": 0.6833,
+      "precision": 1,
+      "recall": 0.6833,
+      "f1": 0.8119,
+      "false_positive_rate": 0,
+      "specificity": 0
+    },
+    "wrong": {
+      "n": 240,
+      "tp": 0,
+      "fp": 2,
+      "tn": 238,
+      "fn": 0,
+      "accuracy": 0.9917,
+      "precision": 0,
+      "recall": 0,
+      "f1": 0,
+      "false_positive_rate": 0.0083,
+      "specificity": 0.9917
+    }
+  },
+  "category_signal": {
+    "Authority": {
+      "fired_on_scam": 177,
+      "fired_on_non_scam": 0,
+      "scam_share": 1,
+      "coverage_of_scam": 0.1844
+    },
+    "Urgency": {
+      "fired_on_scam": 400,
+      "fired_on_non_scam": 78,
+      "scam_share": 0.8368,
+      "coverage_of_scam": 0.4167
+    },
+    "Secrecy": {
+      "fired_on_scam": 1,
+      "fired_on_non_scam": 0,
+      "scam_share": 1,
+      "coverage_of_scam": 0.001
+    },
+    "Preventing verification": {
+      "fired_on_scam": 33,
+      "fired_on_non_scam": 3,
+      "scam_share": 0.9167,
+      "coverage_of_scam": 0.0344
+    },
+    "New beneficiary": {
+      "fired_on_scam": 3,
+      "fired_on_non_scam": 0,
+      "scam_share": 1,
+      "coverage_of_scam": 0.0031
+    },
+    "Approval bypass": {
+      "fired_on_scam": 0,
+      "fired_on_non_scam": 0,
+      "scam_share": 0,
+      "coverage_of_scam": 0
+    },
+    "Threat or coercion": {
+      "fired_on_scam": 229,
+      "fired_on_non_scam": 0,
+      "scam_share": 1,
+      "coverage_of_scam": 0.2385
+    },
+    "Reward or lure": {
+      "fired_on_scam": 96,
+      "fired_on_non_scam": 0,
+      "scam_share": 1,
+      "coverage_of_scam": 0.1
+    }
+  },
+  "errors": {
+    "missed_scam_calls": 200,
+    "false_alarms": 97,
+    "missed_by_scenario": {
+      "refund": 56,
+      "reward": 59,
+      "ssn": 9,
+      "support": 76
+    },
+    "false_alarms_by_scenario": {
+      "appointment": 35,
+      "delivery": 29,
+      "insurance": 31,
+      "wrong": 2
+    },
+    "missed_examples": [
+      {
+        "id": "scam_single-test-0163",
+        "type": "refund",
+        "detected": [
+          "authority"
+        ],
+        "actions": [],
+        "first_caller_turn": "Hello, my name is David and I'm calling from the Microsoft Refund Department. We've been trying to reach you about a refund you're owed for a previous purchase."
+      },
+      {
+        "id": "scam_single-test-0164",
+        "type": "refund",
+        "detected": [
+          "authority"
+        ],
+        "actions": [],
+        "first_caller_turn": "Hello, this is John from the Federal Trade Commission. We've been trying to reach you about a refund you're owed."
+      },
+      {
+        "id": "scam_single-test-0168",
+        "type": "refund",
+        "detected": [
+          "authority"
+        ],
+        "actions": [],
+        "first_caller_turn": "Hello, my name is John and I'm calling from the Federal Trade Commission. We've been tracking a fraudulent transaction on your credit card and we need to issue a refund."
+      },
+      {
+        "id": "scam_single-test-0171",
+        "type": "refund",
+        "detected": [
+          "authority"
+        ],
+        "actions": [],
+        "first_caller_turn": "Hello, my name is John and I'm calling from the refund department of Amazon. We've noticed that you're eligible for a refund of $500 due to a technical issue with your recent purchase."
+      },
+      {
+        "id": "scam_single-test-0172",
+        "type": "refund",
+        "detected": [
+          "authority"
+        ],
+        "actions": [],
+        "first_caller_turn": "Hello, my name is David and I'm calling from the customer service department of Amazon. How are you today?"
+      },
+      {
+        "id": "scam_single-test-0174",
+        "type": "refund",
+        "detected": [
+          "authority"
+        ],
+        "actions": [],
+        "first_caller_turn": "Hello, this is John from Amazon customer service. I'm calling to inform you that we've issued a refund of $500 to your account due to a technical error."
+      },
+      {
+        "id": "scam_single-test-0177",
+        "type": "refund",
+        "detected": [
+          "authority"
+        ],
+        "actions": [],
+        "first_caller_turn": "Hello, this is John from the Customer Service Department of Amazon. How are you today?"
+      },
+      {
+        "id": "scam_single-test-0178",
+        "type": "refund",
+        "detected": [
+          "authority"
+        ],
+        "actions": [],
+        "first_caller_turn": "Hello, this is Karen from Amazon customer service. We've noticed that you've been overcharged on your recent purchase and we're calling to offer you a refund."
+      }
+    ],
+    "false_alarm_examples": [
+      {
+        "id": "scam_single-test-0018",
+        "type": "appointment",
+        "state": "Needs verification",
+        "detected": [],
+        "actions": [
+          "Identity / account details"
+        ],
+        "phrases": []
+      },
+      {
+        "id": "scam_single-test-0023",
+        "type": "appointment",
+        "state": "Needs verification",
+        "detected": [],
+        "actions": [
+          "Identity / account details"
+        ],
+        "phrases": []
+      },
+      {
+        "id": "scam_single-test-0024",
+        "type": "appointment",
+        "state": "Needs verification",
+        "detected": [],
+        "actions": [
+          "Identity / account details"
+        ],
+        "phrases": []
+      },
+      {
+        "id": "scam_single-test-0061",
+        "type": "delivery",
+        "state": "Needs verification",
+        "detected": [],
+        "actions": [
+          "Identity / account details"
+        ],
+        "phrases": []
+      },
+      {
+        "id": "scam_single-test-0099",
+        "type": "insurance",
+        "state": "Needs verification",
+        "detected": [],
+        "actions": [
+          "Identity / account details"
+        ],
+        "phrases": []
+      },
+      {
+        "id": "scam_single-test-0149",
+        "type": "wrong",
+        "state": "Needs verification",
+        "detected": [],
+        "actions": [
+          "Payment"
+        ],
+        "phrases": []
+      },
+      {
+        "id": "scam_multi-train-0000",
+        "type": "appointment",
+        "state": "Needs verification",
+        "detected": [],
+        "actions": [
+          "Payment"
+        ],
+        "phrases": []
+      },
+      {
+        "id": "scam_multi-train-0004",
+        "type": "appointment",
+        "state": "Needs verification",
+        "detected": [],
+        "actions": [
+          "Payment"
+        ],
+        "phrases": []
+      }
+    ]
+  },
+  "split_discipline": {
+    "method": "Alternating even/odd index diagnostic partitions. Both contain records inspected before and during rule tuning; neither is an independent evaluation.",
+    "legacy_keys": {
+      "development": "even-index reused records",
+      "held_out": "odd-index reused records; not held out from rule development"
+    },
+    "development": {
+      "n": 960,
+      "tp": 378,
+      "fp": 49,
+      "tn": 431,
+      "fn": 102,
+      "accuracy": 0.8427,
+      "precision": 0.8852,
+      "recall": 0.7875,
+      "f1": 0.8335,
+      "false_positive_rate": 0.1021,
+      "specificity": 0.8979
+    },
+    "held_out": {
+      "n": 960,
+      "tp": 382,
+      "fp": 48,
+      "tn": 432,
+      "fn": 98,
+      "accuracy": 0.8479,
+      "precision": 0.8884,
+      "recall": 0.7958,
+      "f1": 0.8396,
+      "false_positive_rate": 0.1,
+      "specificity": 0.9
+    }
+  },
+  "topic_shortcut_audit": {
+    "families": {
+      "appointment": {
+        "scam": 0,
+        "non_scam": 240
+      },
+      "delivery": {
+        "scam": 0,
+        "non_scam": 240
+      },
+      "insurance": {
+        "scam": 0,
+        "non_scam": 240
+      },
+      "wrong": {
+        "scam": 0,
+        "non_scam": 240
+      },
+      "refund": {
+        "scam": 240,
+        "non_scam": 0
+      },
+      "reward": {
+        "scam": 240,
+        "non_scam": 0
+      },
+      "ssn": {
+        "scam": 240,
+        "non_scam": 0
+      },
+      "support": {
+        "scam": 240,
+        "non_scam": 0
+      }
+    },
+    "single_label_families": [
+      "appointment",
+      "delivery",
+      "insurance",
+      "wrong",
+      "refund",
+      "reward",
+      "ssn",
+      "support"
+    ],
+    "every_family_is_single_label": true,
+    "finding": "Every scenario family carries exactly one label. Topic alone predicts the label on this corpus, so a high score here can be achieved without modelling fraud at all. This is direct evidence for the topic-shortcut limitation stated in the README, and it applies to the trained classifier as well as to these rules."
+  }
+}
