@@ -1,4 +1,4 @@
-# AegisVoice - local call-verification prototype
+# Cypher - local call-verification prototype
 
 A browser workspace for inspecting social-engineering requests and limited voice-verification evidence. **Not a validated fraud detector, voice-cloning detector or caller-authentication service.**
 
