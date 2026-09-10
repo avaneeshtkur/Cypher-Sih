@@ -154,7 +154,7 @@ function renderRealHumanAnalysis(status,coverage){
     card('Live or uploaded human audio','LOCAL INFERENCE','With consent, an operator can supply a live capture or uploaded clip to ASR, replay, Pella, AASIST and optional speaker-similarity analysis.','These are per-call detector signals, not a labelled evaluation dataset. Results support review but do not establish identity, authenticity, or population-level accuracy.','available')
   );
 }
-export async function apiModel(command,body){if(command!=='intent')assertMediaInput(body,'Audio-bearing media');const response=await fetch(`/api/${command}`,{method:'POST',headers:{'Content-Type':command==='intent'?'application/json':'application/octet-stream'},body:command==='intent'?JSON.stringify(body):body});const data=await response.json();if(!response.ok)throw new Error(data.error||'Model request failed');return data;}
+export async function apiModel(command,body){if(command!=='intent')assertMediaInput(body,'Audio-bearing media');const endpoint=command==='deepfake'?'diagnostic':command;const response=await fetch(`/api/${endpoint}`,{method:'POST',headers:{'Content-Type':command==='intent'?'application/json':'application/octet-stream'},body:command==='intent'?JSON.stringify(body):body});const data=await response.json();if(!response.ok)throw new Error(data.error||'Model request failed');return data;}
 export function renderLearned(result,error=null){
  const host=$('learned-result');host.replaceChildren(element('b','Learned scam classifier'));
  if(error){host.append(element('p',error));return;}

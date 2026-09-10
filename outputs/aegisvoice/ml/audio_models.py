@@ -108,7 +108,7 @@ def deepfake(payload):
         try:
             detectors[name] = inference(samples)
         except Exception as error:
-            detectors[name] = {"available": False, "error": str(error)[:500]}
+            detectors[name] = {"available": False, "status": "UNAVAILABLE", "error": str(error)[:500]}
     usable = [value for value in detectors.values() if value.get("available")]
     labels = [value["label"] in ("synthetic-like", "spoof-like") for value in usable]
     disagreement = len(labels) == 2 and labels[0] != labels[1]

@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {AudioChunker,encodeWav,rms} from '../audio-core.mjs';
+import {AudioChunker,FixedWindowChunker,encodeWav,rms} from '../audio-core.mjs';
 test('continuous speech flushes at max window without losing or duplicating samples',()=>{
  const output=[],segmenter=new AudioChunker(1000,x=>output.push(x));
  for(let i=0;i<82;i++)segmenter.push(new Float32Array(100).fill(i/100));segmenter.flush();
@@ -20,3 +20,8 @@ test('WAV encoding has a valid mono PCM header and clips signed samples',()=>{
  assert.equal(view.getUint32(40,true),6);assert.equal(view.getInt16(44,true),-32768);assert.equal(view.getInt16(48,true),32767);
 });
 test('silence RMS is zero and signed speech energy is retained',()=>{assert.equal(rms(new Float32Array()),0);assert.equal(rms(new Float32Array([-.5,.5])),.5);});
+test('fixed window chunker emits exact four-second windows',()=>{
+ const output=[],chunker=new FixedWindowChunker(1000,x=>output.push(x));
+ chunker.push(new Float32Array(2500).fill(.25));chunker.push(new Float32Array(1800).fill(.5));
+ assert.deepEqual(output.map(x=>[x.start,x.end,x.pcm.length]),[[0,4,4000]]);assert.equal(chunker.size,300);
+});

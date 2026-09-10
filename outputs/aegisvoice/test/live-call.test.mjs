@@ -137,7 +137,7 @@ test('mocked ASR path encodes captured PCM and evaluates the returned transcript
   assert.deepEqual(f.permissions.microphone[0], { audio: { echoCancellation: false, noiseSuppression: false }, video: false });
   assert.deepEqual(f.contexts[0].modules, ['/pcm-worklet.js']);
   assert.equal(f.worklets[0].name, 'capture-pcm');
-  assert.equal(f.get('pipeline-text').textContent, 'Local ASR');
+  assert.equal(f.get('pipeline-text').textContent, 'Optional local ASR');
   f.segment();
   await until(() => f.live.snapshot()?.events.length === 1, 'ASR transcript analysis and evidence event');
 
@@ -182,22 +182,23 @@ test('mocked ASR path encodes captured PCM and evaluates the returned transcript
   assert.equal(f.get('pipeline-analysis').textContent, 'Text rules evaluated');
 });
 
-test('unknown or unavailable ASR capabilities prevent microphone and shared-audio permission requests', async t => {
+test('unavailable ASR does not prevent anti-spoof microphone capture when deepfake models are ready', async t => {
   const f = fixture(t);
-  for (const readiness of [null, { runtime: true, asr: false, intent: true, reasons: { asr: 'ASR dependencies unavailable in fixture' } }]) {
+  for (const readiness of [null, { runtime: true, asr: false, deepfake: true, intent: true, reasons: { asr: 'ASR dependencies unavailable in fixture' } }]) {
     f.live.setCapabilities(readiness);
-    assert.equal(f.get('live-mic').disabled, true);
-    assert.equal(f.get('live-share').disabled, true);
-    // Direct handler invocation must be guarded too, not just the disabled buttons.
-    await f.get('live-mic').onclick();
-    await f.get('live-share').onclick();
-    assert.equal(f.live.snapshot(), null);
+    if (!readiness) {
+      assert.equal(f.get('live-mic').disabled, true);
+      assert.equal(f.get('live-share').disabled, true);
+      await f.get('live-mic').onclick();
+      assert.equal(f.live.snapshot(), null);
+    } else {
+      assert.equal(f.get('live-mic').disabled, false);
+      assert.equal(f.get('live-share').disabled, false);
+    }
   }
   assert.equal(f.permissions.microphone.length, 0);
   assert.equal(f.permissions.display.length, 0);
-  assert.equal(f.contexts.length, 0);
-  assert.equal(f.calls.length, 0);
-  assert.match(f.get('live-status').textContent, /ASR dependencies unavailable/);
+  assert.match(f.get('live-status').textContent, /Pella\/AASIST|ASR dependencies unavailable/);
 });
 
 test('slow OpenAI batch backend is not exposed as continuous live capture', async t => {
@@ -205,7 +206,7 @@ test('slow OpenAI batch backend is not exposed as continuous live capture', asyn
   f.live.setCapabilities({runtime:true,asr:true,asrBackend:'openai-whisper',model:'medium.pt'});
   assert.equal(f.get('live-mic').disabled,true);
   assert.equal(f.get('live-share').disabled,true);
-  assert.match(f.get('live-capability').textContent,/batch ASR|continuous capture is disabled/i);
+  assert.match(f.get('live-capability').textContent,/batch ASR|continuous capture is disabled|Pella\/AASIST unavailable/i);
   await f.get('live-mic').onclick();
   assert.equal(f.permissions.microphone.length,0);
   assert.equal(f.calls.length,0);
@@ -238,7 +239,7 @@ test('reset aborts the request and ignores late ASR and worklet callbacks, inclu
   assert.deepEqual(f.live.snapshot().entries, []);
   assert.deepEqual(f.live.snapshot().events, []);
   assert.equal(f.live.snapshot().gaps, 0);
-  assert.equal(f.get('pipeline-analysis').textContent, 'Waiting for speech');
+  assert.equal(f.get('pipeline-analysis').textContent, 'Waiting for waveform');
 
   f.segment();
   await until(() => f.live.snapshot()?.events.length === 1, 'new generation transcript');

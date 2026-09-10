@@ -16,6 +16,19 @@ export class AudioChunker {
     this.emit({pcm,start,end:this.total/this.rate,rate:this.rate});
   }
 }
+export class FixedWindowChunker {
+  constructor(rate, emit) { this.rate=rate; this.emit=emit; this.parts=[]; this.size=0; this.total=0; }
+  push(samples) {
+    if(!samples.length)return;
+    this.parts.push(samples);this.size+=samples.length;
+    while(this.size>=this.rate*4){
+      const window=new Float32Array(this.rate*4);let at=0;
+      while(at<window.length){const part=this.parts[0],take=Math.min(part.length,window.length-at);window.set(part.subarray(0,take),at);at+=take;if(take===part.length)this.parts.shift();else this.parts[0]=part.subarray(take);this.size-=take;}
+      const start=this.total/this.rate;this.total+=window.length;this.emit({pcm:window,start,end:this.total/this.rate,rate:this.rate});
+    }
+  }
+  flush(){this.parts=[];this.size=0;}
+}
 export function encodeWav(pcm, rate) {
   const bytes=new ArrayBuffer(44+pcm.length*2), view=new DataView(bytes);
   const str=(at,s)=>{for(let i=0;i<s.length;i++)view.setUint8(at+i,s.charCodeAt(i));};

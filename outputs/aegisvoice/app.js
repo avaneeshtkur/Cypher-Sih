@@ -449,7 +449,7 @@ function selectedDatabaseSample(){return databaseCatalogue?.samples?.find(sample
 function databaseControls(){const sample=selectedDatabaseSample();$('database-play').disabled=!sample||databaseBusy;$('database-analyze').disabled=!sample||databaseBusy||!asrAvailable;$('database-deepfake').disabled=!sample||databaseBusy||!deepfakeAvailable;}
 function renderDatabaseSample(){
   const sample=selectedDatabaseSample();if(!sample)return;
-  $('database-player').src=`/database-audio/${encodeURIComponent(sample.file)}`;
+  $('database-player').src=sample.audioUrl||`/database-audio/${encodeURIComponent(sample.file)}`;
   $('database-model-result').hidden=true;
   if(sourceMode==='database'&&recordedSession?.source!==sample.id){
     recordedSession=null;renderCall(null);setText('session-mode','REAL AUDIO DATABASE');setText('pipeline-input',sample.title);setText('pipeline-text','Not analyzed');setText('pipeline-analysis','Waiting');
@@ -471,7 +471,7 @@ $('database-play').onclick=()=>$('database-player').play();
 $('database-analyze').onclick=async()=>{
   const sample=selectedDatabaseSample();if(!sample||databaseBusy)return;databaseBusy=true;databaseControls();setText('database-status','Running local ASR on the bundled waveform, then evaluating the recognized words…');
   try{
-    const response=await fetch(`/database-audio/${encodeURIComponent(sample.file)}`);if(!response.ok)throw new Error(`Audio unavailable (HTTP ${response.status})`);const blob=await response.blob();
+    const response=await fetch(sample.audioUrl||`/database-audio/${encodeURIComponent(sample.file)}`);if(!response.ok)throw new Error(`Audio unavailable (HTTP ${response.status})`);const blob=await response.blob();
     const result=await transcribe(blob);if(sample!==selectedDatabaseSample())return;
     const session=await buildRecordedAnalysis(result,{source:sample.id,sourceTitle:sample.title,mode:'bundled-database-waveform-asr',reference:referenceEvidence(sample,'database-audio')});if(sample!==selectedDatabaseSample())return;
     renderRecordedMonitor(session,sample.source,'DATABASE AUDIO + LOCAL ASR');
@@ -479,7 +479,7 @@ $('database-analyze').onclick=async()=>{
     setText('database-status',`Fresh call-content result: ${detectionSummary(session)}. ${sample.title}: recognized ${result.duration.toFixed(1)} s of actual audio in ${(result.inference_ms/1000).toFixed(1)} s.${score} Source and voice-origin labels were not used for inference.`);
   }catch(error){setText('database-status',`Database audio analysis failed: ${error.message}`);}finally{databaseBusy=false;databaseControls();}
 };
-$('database-deepfake').onclick=async()=>{const sample=selectedDatabaseSample();if(!sample||databaseBusy)return;databaseBusy=true;databaseControls();renderModelEvidence('database-model-result',{status:'Running Pella and AASIST…',warning:'Supplementary anti-spoof evidence.'});try{const response=await fetch(`/database-audio/${encodeURIComponent(sample.file)}`);if(!response.ok)throw new Error('Audio unavailable');const result=await apiModel('deepfake',await response.blob());if(sample.voiceOrigin?.startsWith('Synthetic/deepfake')){const caught=hasSyntheticVoiceEvidence(result);result.warning=caught?'Publisher label: synthetic. At least one detector identified this clip; this is one sample, not an accuracy estimate.':'KNOWN MODEL MISS — the publisher labels this clip synthetic, but neither detector identified it. The ground-truth label is retained so failure is visible.';}renderModelEvidence('database-model-result',result);}catch(error){renderModelEvidence('database-model-result',null,error.message);}finally{databaseBusy=false;databaseControls();}};
+$('database-deepfake').onclick=async()=>{const sample=selectedDatabaseSample();if(!sample||databaseBusy)return;databaseBusy=true;databaseControls();renderModelEvidence('database-model-result',{status:'Running Pella and AASIST…',warning:'Supplementary anti-spoof evidence.'});try{const response=await fetch(sample.audioUrl||`/database-audio/${encodeURIComponent(sample.file)}`);if(!response.ok)throw new Error('Audio unavailable');const result=await apiModel('deepfake',await response.blob());if(sample.voiceOrigin?.startsWith('Synthetic/deepfake')){const caught=hasSyntheticVoiceEvidence(result);result.warning=caught?'Publisher label: synthetic. At least one detector identified this clip; this is one sample, not an accuracy estimate.':'KNOWN MODEL MISS — the publisher labels this clip synthetic, but neither detector identified it. The ground-truth label is retained so failure is visible.';}renderModelEvidence('database-model-result',result);}catch(error){renderModelEvidence('database-model-result',null,error.message);}finally{databaseBusy=false;databaseControls();}};
 configureMediaInput($('lab-audio'));configureMediaInput($('call-audio'));
 initWorkspace();
 initCaseLibrary();

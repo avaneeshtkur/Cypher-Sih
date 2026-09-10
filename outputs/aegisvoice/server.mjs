@@ -9,6 +9,7 @@ import { sendAudio } from './audio-response.mjs';
 import { auditHumanVishingCorpus } from './human-vishing-coverage.mjs';
 import { verifyThirdPartyModels } from './model-integrity.mjs';
 import { MAX_MEDIA_BYTES } from './media-input.mjs';
+import { analyze } from './engine.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url)),workspace=path.resolve(root,'../..');
 const port=Number(process.env.PORT||4173);
@@ -34,7 +35,8 @@ export function resolveRuntimeSettings(options={}){
   const explicit=options.readiness??{};
   const asrBackend=validateAsrBackend(options.asrBackend??explicit.asrBackend??env.AEGIS_ASR_BACKEND??config.asrBackend??'faster-whisper');
   const pythonOverride=options.python??explicit.python??env.AEGIS_ASR_PYTHON;
-  const python=pythonOverride??config.python??path.join('work','asr-runtime','Scripts','python.exe');
+  const defaultPython=process.platform==='win32'?path.join('work','asr-runtime','Scripts','python.exe'):path.join('work','asr-runtime','bin','python');
+  const python=pythonOverride??config.python??defaultPython;
   const speechModel=options.speechModel??explicit.speechModel??env.AEGIS_ASR_MODEL??config.speechModel??path.join('work','asr-model');
   for(const [key,value] of Object.entries({python,speechModel})){
     if(typeof value!=='string'||!value.trim())throw new Error(`Configured ${key} must be a nonempty string.`);
@@ -48,6 +50,7 @@ const {python,speechModel,asrBackend,workspace:runtimeWorkspace}=resolveRuntimeS
 const modelIntegrity=(options.verifyModels??verifyThirdPartyModels)(root).catch(error=>({verified:false,results:{},errors:[error.message],checkedAt:new Date().toISOString()}));
 const env=pythonEnvironment(asrBackend,options.env??process.env),spawnProcess=options.spawnProcess??spawn;
 const audioDirectory=path.join(runtimeWorkspace,'work','datasets','asvspoof2017','extracted','ASVspoof2017_V2_eval');
+const publicAudioDirectory=path.join(runtimeWorkspace,'data','public');
 const readiness=createReadiness({root,audioDirectory,...options.readiness,python,speechModel,asrBackend,env});
 const allowed=new Map([['/',['index.html','text/html']],['/app.js',['app.js','text/javascript']],['/dataset-lab.js',['dataset-lab.js','text/javascript']],['/engine.mjs',['engine.mjs','text/javascript']],['/style.css',['style.css','text/css']]]);
 const tasks=new Set();
@@ -81,7 +84,7 @@ const server=http.createServer(async(req,res)=>{
     }
     if(pathname==='/api/status'&&req.method==='GET'){
       const ready=await readiness(),integrity=await modelIntegrity,reported={...ready,reasons:{...ready.reasons}};
-      for(const capability of ['deepfake','speaker',...(asrBackend==='faster-whisper'?['asr']:[])])if(Object.values(integrity.results).some(item=>item.capability===capability&&!item.ok)){reported[capability]=false;reported.reasons[capability]=`${capability} model integrity verification failed.`;}
+      for(const capability of ['deepfake','speaker',...(asrBackend==='faster-whisper'?['asr']:[])]){const failures=Object.entries(integrity.results).filter(([,item])=>item.capability===capability&&!item.ok).map(([name,item])=>`${name}: ${item.error||'hash mismatch'}`);if(failures.length){reported[capability]=false;reported.reasons[capability]=`${capability} model integrity verification failed (${failures.join('; ')}).`;}}
       let intentLanguages=['en'];
       try{const report=await artifact('text_report.json');if(Array.isArray(report.supported_languages)&&report.supported_languages.length)intentLanguages=report.supported_languages;}
       catch{}
@@ -91,8 +94,20 @@ const server=http.createServer(async(req,res)=>{
       try{json(res,200,JSON.parse((await readFile(path.join(root,'demo-audio','manifest.json'),'utf8')).replace(/^\uFEFF/,'')));}
       catch{json(res,503,{error:'Saved demo manifest is unavailable.'});}return;
     }
+    if(pathname==='/api/public-audio'&&req.method==='GET'){
+      try{json(res,200,JSON.parse(await readFile(path.join(publicAudioDirectory,'registry.json'))));}
+      catch{json(res,503,{error:'Public ASVspoof audio is not prepared locally.'});}return;
+    }
     if(pathname==='/api/database-audio'&&req.method==='GET'){
-      try{json(res,200,JSON.parse(await readFile(path.join(root,'database-audio','manifest.json'),'utf8')));}
+      try{
+        const manifest=JSON.parse(await readFile(path.join(root,'database-audio','manifest.json'),'utf8'));
+        try{
+          const publicManifest=JSON.parse(await readFile(path.join(publicAudioDirectory,'registry.json'),'utf8'));
+          manifest.samples.push(...publicManifest.records.map(record=>({id:`public-${record.id}`,title:`ASVspoof 2019 LA · ${record.label} · ${record.id}`,file:record.file,audioUrl:`/public-audio/${record.file}`,bytes:0,source:'SpeechAntiSpoofingBenchmarks/ASVspoof2019_LA',provenance:'Public anti-spoof benchmark',voiceOrigin:record.label==='spoof'?'Synthetic speech / spoof benchmark':'Bonafide benchmark speech',language:'Not supplied',fraudContext:'No transcript or fraud label; audio-only anti-spoof validation',license:'Dataset terms apply'})));
+          manifest.sourceStatus.push({name:'ASVspoof 2019 LA public subset',status:'prepared',count:publicManifest.records.length,reason:'Fresh Pella/AASIST inference uses the selected waveform.'});
+        }catch{}
+        json(res,200,manifest);
+      }
       catch{json(res,503,{error:'Bundled database-audio manifest is unavailable.'});}return;
     }
     if(pathname==='/api/reports'&&req.method==='GET'){
@@ -140,7 +155,13 @@ const server=http.createServer(async(req,res)=>{
       if(path.basename(name)!==name||!manifest.samples?.some(sample=>sample.file===name)){json(res,404,{error:'Unknown database audio sample'});return;}
       await sendAudio(req,res,path.join(root,'database-audio',name));return;
     }
-    const cmd={'/api/intent':'intent','/api/replay':'replay','/api/transcribe':'transcribe','/api/deepfake':'deepfake','/api/speaker':'speaker'}[pathname];
+    if(pathname.startsWith('/public-audio/')&&['GET','HEAD'].includes(req.method)){
+      const name=decodeURIComponent(pathname.slice('/public-audio/'.length));
+      const [label,file]=name.split('/');
+      if(!file||path.basename(file)!==file||!['bonafide','spoof'].includes(label)){json(res,404,{error:'Unknown public audio sample'});return;}
+      await sendAudio(req,res,path.join(publicAudioDirectory,label,file));return;
+    }
+    const cmd={'/api/intent':'intent','/api/replay':'replay','/api/transcribe':'transcribe','/api/deepfake':'deepfake','/api/diagnostic':'deepfake','/api/speaker':'speaker'}[pathname];
     if(cmd&&req.method==='POST'){
       if(tasks.has(cmd)){json(res,429,{error:'This local model is already processing a request. Try again shortly.'});return;}
       tasks.add(cmd);
@@ -151,12 +172,18 @@ const server=http.createServer(async(req,res)=>{
       try{
         const status=await readiness(),key=cmd==='transcribe'?'asr':cmd;
         if(!status[key]){json(res,503,{error:status.reasons[key],capability:key,available:false});return;}
-        if(['deepfake','speaker','transcribe'].includes(cmd)&&!(cmd==='transcribe'&&asrBackend==='openai-whisper')){const integrity=await modelIntegrity,needed=Object.values(integrity.results).filter(item=>item.capability===key);if(!needed.length||needed.some(item=>!item.ok)){json(res,503,{error:`${key} model integrity verification failed.`,capability:key,available:false});return;}}
+        if(['deepfake','speaker','transcribe'].includes(cmd)&&!(cmd==='transcribe'&&asrBackend==='openai-whisper')){const integrity=await modelIntegrity,needed=Object.entries(integrity.results).filter(([,item])=>item.capability===key),failures=needed.filter(([,item])=>!item.ok).map(([name,item])=>`${name}: ${item.error||'hash mismatch'}`);if(!needed.length||failures.length){json(res,503,{error:`${key} model integrity verification failed (${failures.join('; ')}).`,capability:key,available:false});return;}}
         const payload=await body(req,cmd==='intent'?500000:cmd==='speaker'?MAX_MEDIA_BYTES*2+4:MAX_MEDIA_BYTES);
         const args=cmd==='transcribe'?[path.join(root,'transcribe.py'),speechModel]:
           ['deepfake','speaker'].includes(cmd)?[path.join(root,'ml/audio_models.py'),cmd]:[path.join(root,'ml/infer.py'),cmd];
         // The offline medium checkpoint is a batch CPU backend, not a real-time engine.
         const result=await runPython(args,payload,cmd==='transcribe'&&asrBackend==='openai-whisper'?240000:300000,requestAbort.signal);
+        if(pathname==='/api/diagnostic'){
+          const transcript=String(req.headers['x-context-transcript']??'');
+          const context=transcript.trim()?analyze([{role:'caller',text:transcript}]):null;
+          result.contextRisk=context?{state:context.state,reason:context.reason}:null;
+          result.transcriptUsedByDetectors=false;
+        }
         if(!requestAbort.signal.aborted)json(res,200,result);
       }finally{tasks.delete(cmd);}return;
     }
